@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Your Name] - Blog</title>
+    <meta name="description" content="Blog of [Your Name], sharing insights on UX/UI Design & Software Engineering.">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/blog.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="components/header.html"></div>
+    <main>
+        <section class="hero">
+            <h1>Blog</h1>
+            <p>Sharing thoughts, tutorials, and insights on design and development.</p>
+            <a href="#" class="cta-button">Read Latest Posts →</a>
+        </section>
+        <section class="blog-posts">
+            <a href="blog/blog1.html" class="blog-card">
+                <h3>Giải mã JWT (JSON Web Token): Tấm "vé thông hành" quyền lực không cần Check Database</h3>
+                <p>Hiểu rõ JWT là gì, cách hoạt động và những sai lầm phổ biến khi sử dụng JSON Web Token trong authentication.</p>
+                <span class="date">Dec 20, 2025</span>
+                <span class="read-more">Read More →</span>
+            </a>
+            <a href="blog/blog2.html" class="blog-card">
+                <h3>RESTful API: Hãy tưởng tượng Server là một cái Bếp, và API là người Bồi bàn</h3>
+                <p>Giải mã RESTful API qua mô hình nhà hàng, hiểu rõ các quy tắc và tại sao nó quan trọng.</p>
+                <span class="date">Dec 21, 2025</span>
+                <span class="read-more">Read More →</span>
+            </a>
+            <a href="blog/blog3.html" class="blog-card">
+                <h3>Java OOP: Chuyện cái khuôn bánh và chiếc bánh quy (Class vs Object) - Hiểu một lần nhớ cả đời</h3>
+                <p>Giải thích Class và Object trong Java OOP qua ví dụ làm bánh, hiểu sâu về bộ nhớ và tại sao cần OOP.</p>
+                <span class="date">Dec 21, 2025</span>
+                <span class="read-more">Read More →</span>
+            </a>
+            <a href="blog/blog4.html" class="blog-card">
+                <h3>JavaScript: Ba dấu bằng (===) và cú lừa mang tên "Ép kiểu" (Type Coercion)</h3>
+                <p>Giải thích sự khác biệt giữa == và === trong JavaScript, Type Coercion và những cạm bẫy phổ biến.</p>
+                <span class="date">Dec 21, 2025</span>
+                <span class="read-more">Read More →</span>
+            </a>
+            <a href="blog/blog5.html" class="blog-card">
+                <h3>TCP và UDP: Cuộc chiến giữa "Sự tin cậy" và "Tốc độ" trong thế giới mạng</h3>
+                <p>Giải thích sự khác biệt giữa TCP và UDP, ưu nhược điểm và ứng dụng thực tế.</p>
+                <span class="date">Dec 21, 2025</span>
+                <span class="read-more">Read More →</span>
+            </a>            <a href="blog/blog6.html" class="blog-card">
+                <h3>Node.js: "Đơn luồng" (Single-Threaded) nhưng tại sao lại cân được hàng nghìn request?</h3>
+                <p>Giải thích kiến trúc Event-Driven Non-Blocking I/O của Node.js và tại sao nó nhanh.</p>
+                <span class="date">Dec 22, 2025</span>
+                <span class="read-more">Read More →</span>
+            </a>
+            <a href="blog/blog7.html" class="blog-card">
+                <h3>Flutter Internals: Widget, Element và RenderObject - "Mối tình tay ba" bí ẩn phía sau màn hình</h3>
+                <p>Giải thích mối quan hệ giữa Widget, Element và RenderObject trong Flutter và cách chúng hoạt động.</p>
+                <span class="date">Dec 22, 2025</span>
+                <span class="read-more">Read More →</span>
+            </a>
+            <a href="blog/blog8.html" class="blog-card">
+                <h3>MongoDB hay MySQL? Đừng chọn theo phong trào! (Cuộc chiến RDBMS vs NoSQL)</h3>
+                <p>So sánh MySQL và MongoDB, ưu nhược điểm và khi nào nên dùng từng loại database.</p>
+                <span class="date">Dec 23, 2025</span>
+                <span class="read-more">Read More →</span>
+            </a>
+            <a href="blog/blog9.html" class="blog-card">
+                <h3>Nghệ thuật viết Commit Message: Đừng để đồng nghiệp muốn "tác động vật lý" bạn</h3>
+                <p>Hướng dẫn viết commit message chuẩn theo Conventional Commits để dễ quản lý và tự động hóa.</p>
+                <span class="date">Dec 26, 2025</span>
+                <span class="read-more">Read More →</span>
+            </a>        </section>
+    </main>
+    <div data-include="components/footer.html"></div>
+    <script src="js/main.js"></script>
+    <script src="js/animation.js"></script>
+    <script src="js/nav.js"></script>
+</body>
+</html>

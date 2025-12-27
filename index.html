@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nguyễn An Khang Portfolio</title>
+    <meta name="description" content="Portfolio of [Your Name], UX/UI Designer & Product Designer with over three years of experience.">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/index.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css">
+</head>
+<body>
+    <div data-include="components/header.html"></div>
+    <main>
+        <section class="me">
+            <div class="hero">
+                <img src="assets/images/avatar.png" alt="Avatar" class="avatar">
+
+                <div class="hero-content">
+                    <h2>Hi, I'm</h2>
+                    <h1>NGUYEN AN KHANG</h1>
+                    <h2>Software Engineering</h2>
+
+                    <p class="location">
+                        <img src="assets/icons/location.svg" alt="Location">
+                        Ho Chi Minh City, Vietnam
+                    </p>
+
+                    <!-- <a href="about.html" class="cta-button">More about me →</a> -->
+                </div>
+            </div>
+        </section>
+
+        <section class="skills">
+            <h2>Tech Stack</h2>
+
+            <div class="skills-grid">
+                <div class="skill-item">
+                    <i class="devicon-nodejs-plain colored"></i>
+                    <span>Node.js</span>
+                </div>
+
+                <div class="skill-item">
+                    <i class="devicon-firebase-plain colored"></i>
+                    <span>Firebase</span>
+                </div>
+
+                <div class="skill-item">
+                    <i class="devicon-flutter-plain colored"></i>
+                    <span>Flutter</span>
+                </div>
+
+                <div class="skill-item">
+                    <i class="devicon-googlecloud-plain colored"></i>
+                    <span>Google Cloud</span>
+                </div>
+
+                <div class="skill-item">
+                    <i class="devicon-java-plain colored"></i>
+                    <span>Java</span>
+                </div>
+                
+                <div class="skill-item">
+                    <i class="devicon-microsoftsqlserver-plain"></i>
+                    <span>SQL Server</span>
+                </div>
+                
+            </div>
+        </section>
+
+        
+        <section class="achievements">
+            <h2>Achievements</h2>
+            <div class="achievements-container">
+                <div class="badge-wrapper">
+                    <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="87a9e01e-9540-44d7-841a-d322b2847a02" data-share-badge-host="https://www.credly.com"></div>
+                </div>
+                <div class="badge-wrapper">
+                    <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="0a558f25-4952-4799-8b9e-b564d1fad6d7" data-share-badge-host="https://www.credly.com"></div>
+                </div>
+                <div class="badge-wrapper">
+                    <div data-iframe-width="150" data-iframe-height="270" data-share-badge-id="0e5510d5-ad28-46c2-bfa9-a207eab64a5c" data-share-badge-host="https://www.credly.com"></div>
+                </div>
+            </div>
+            <script type="text/javascript" async src="//cdn.credly.com/assets/utilities/embed.js"></script>
+        </section>
+        
+    </main>
+    <div data-include="components/footer.html"></div>
+    <script src="js/main.js"></script>
+    <script src="js/animation.js"></script>
+    <script src="js/nav.js"></script>
+</body>
+</html>

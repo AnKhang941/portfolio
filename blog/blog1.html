@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giải mã JWT (JSON Web Token): Tấm "vé thông hành" quyền lực không cần Check Database</title>
+    <meta name="description" content="Hiểu rõ JWT là gì, cách hoạt động và những sai lầm phổ biến khi sử dụng JSON Web Token trong authentication.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/blog.css">
+    <link href="../assets/highlight/vs.min.css" rel="stylesheet" id="code-theme" />
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeLink = document.getElementById('code-theme');
+            if (savedTheme === 'dark') {
+                themeLink.href = '../assets/highlight/atom-one-dark.min.css';
+                document.documentElement.classList.add('dark');
+            } else {
+                themeLink.href = '../assets/highlight/vs.min.css';
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="../components/header.html"></div>
+    <main>
+        <article class="blog-detail">
+            <header class="blog-header">
+                <div class="header-content">
+                    <h1>Giải mã JWT (JSON Web Token): Tấm "vé thông hành" quyền lực không cần Check Database</h1>
+                    <div class="blog-meta">
+                        <span class="date">December 20, 2025</span>
+                        <span class="author">By Nguyen An Khang</span>
+                    </div>
+                </div>
+            </header>
+            <div class="blog-content">
+                <p>Nếu bạn đã từng làm tính năng Đăng nhập (Authentication), chắc hẳn bạn đã nghe đến cuộc chiến không hồi kết giữa Session-based (truyền thống) và Token-based (hiện đại). Và đại diện tiêu biểu nhất của phe Token chính là JWT.</p>
+
+                <p>Vậy JWT là gì? Tại sao các hệ thống Microservices hay Single Page App (React, Vue, Angular) lại cuồng nó đến thế? Hôm nay, anh em hãy cùng mình "mổ xẻ" nó nhé.</p>
+
+                <h2>1. Vấn đề của cách làm cũ (Session)</h2>
+                <p>Hãy tưởng tượng bạn đi tham dự một hội nghị lớn.</p>
+
+                <p><strong>Cách truyền thống (Session):</strong> Mỗi lần bạn muốn vào cổng, bảo vệ phải chạy lại bàn lễ tân, lật cuốn sổ dày cộp (Database/Memory) ra tra xem tên bạn có trong danh sách không.</p>
+
+                <p><strong>Hệ quả:</strong> Nếu có 10.000 người vào cùng lúc, bàn lễ tân "thất thủ". Server quá tải vì phải tra cứu liên tục.</p>
+
+                <p><strong>Cách hiện đại (JWT):</strong> Khi bạn đến lần đầu, lễ tân đóng cho bạn một con dấu (Token) vào tay. Lần sau bạn đi qua cửa, bảo vệ chỉ cần nhìn con dấu. Hợp lệ? Cho qua. Không cần chạy lại bàn lễ tân nữa.</p>
+
+                <p>=> JWT chính là con dấu đó. Nó giúp Server Stateless (Phi trạng thái), tức là không cần nhớ ai là ai, chỉ cần nhìn Token là biết.</p>
+
+                <h2>2. Giải phẫu một chiếc JWT</h2>
+                <p>Một chuỗi JWT nhìn như một mớ ký tự lộn xộn: aaaaa.bbbbb.ccccc. Nhưng thực ra nó có cấu trúc 3 phần rõ ràng, ngăn cách bởi dấu chấm (.):</p>
+
+                <p><strong>Phần 1: Header (Màu đỏ)</strong><br>
+                Chứa thông tin về thuật toán mã hóa và loại token.</p>
+
+                <pre><code class="language-json">{
+  "alg": "HS256",
+  "typ": "JWT"
+}</code></pre>
+                <p>(Sau đó đoạn JSON này được mã hóa Base64Url thành chuỗi aaaaa)</p>
+
+                <p><strong>Phần 2: Payload (Màu tím) - QUAN TRỌNG NHẤT</strong><br>
+                Đây là nơi chứa dữ liệu ("con dấu") mà chúng ta muốn gửi đi.</p>
+
+                <pre><code class="language-json">{
+  "sub": "1234567890",
+  "name": "Nguyen Van A",
+  "role": "admin",
+  "iat": 1516239022
+}</code></pre>
+                <p>sub: Subject (ID người dùng).</p>
+                <p>name: Tên.</p>
+                <p>iat: Issued At (Thời gian tạo).</p>
+                <p>Lưu ý: Bạn có thể nhét thêm role, email vào đây.</p>
+                <p>(Đoạn này cũng được mã hóa Base64Url thành chuỗi bbbbb)</p>
+
+                <p><strong>Phần 3: Signature (Màu xanh) - Chữ ký bảo mật</strong><br>
+                Làm sao Server biết user không tự ý sửa chữ role: "user" thành role: "admin" trong Payload? Đó là nhờ chữ ký này.</p>
+
+                <p><strong>Công thức tạo chữ ký:</strong></p>
+
+                <pre><code class="language-javascript">HMACSHA256(
+  base64UrlEncode(header) + "." +
+  base64UrlEncode(payload),
+  "SECRET_KEY_CUA_SERVER"
+)</code></pre>
+                <p>Server sẽ lấy Header + Payload, trộn với một cái Secret Key (chỉ Server biết) rồi băm ra chuỗi Signature ccccc. Khi nhận Token, Server sẽ tính toán lại. Nếu chữ ký tính ra khớp với chữ ký trong Token -> Token xịn. Nếu lệch dù chỉ 1 ký tự -> Token giả, vứt ngay.</p>
+
+                <h2>3. Luồng hoạt động thực tế</h2>
+                <ul>
+                    <li><strong>Client:</strong> Gửi Username + Password lên Server.</li>
+                    <li><strong>Server:</strong> Check Database. Đúng user rồi -> Tạo ra chuỗi JWT (ký tên đàng hoàng) -> Trả về cho Client.</li>
+                    <li><strong>Client:</strong> Lưu JWT lại (thường là trong LocalStorage hoặc Cookie).</li>
+                    <li><strong>Client:</strong> Từ request sau, muốn lấy dữ liệu thì gửi kèm JWT trong Header: Authorization: Bearer &lt;token_o_day&gt;</li>
+                    <li><strong>Server:</strong> Nhận Token -> Giải mã chữ ký (không cần query DB) -> Biết ngay đây là ông Nguyen Van A, quyền admin -> Trả dữ liệu.</li>
+                </ul>
+
+                <h2>4. Những sai lầm "chết người" khi dùng JWT</h2>
+                <p>JWT rất mạnh, nhưng dùng sai là "toang" cả hệ thống. Dưới đây là 3 lỗi kinh điển:</p>
+
+                <p><strong>Lỗi 1: Lưu mật khẩu hoặc thông tin nhạy cảm trong Payload</strong><br>
+                Nhiều bạn nghĩ JWT đã được mã hóa. KHÔNG! Nó chỉ là Encode Base64 thôi. Bất kỳ ai copy chuỗi Token của bạn, vứt vào trang jwt.io là đọc được hết Payload bên trong.</p>
+
+                <p>Sai: Lưu password, so_the_tin_dung trong Payload.</p>
+                <p>Đúng: Chỉ lưu user_id, role, expire_time.</p>
+
+                <p><strong>Lỗi 2: Không set thời hạn (Expiry Time)</strong><br>
+                Nếu Token không bao giờ hết hạn, và Hacker trộm được Token đó, hắn sẽ là bạn mãi mãi.</p>
+
+                <p>Giải pháp: Luôn set thời gian hết hạn (exp) ngắn thôi (ví dụ 15 phút - 1 tiếng). Hết hạn thì bắt đăng nhập lại hoặc dùng cơ chế Refresh Token.</p>
+
+                <p><strong>Lỗi 3: Vấn đề thu hồi (Revoke) Token</strong><br>
+                Đây là điểm yếu lớn nhất của JWT so với Session. Vì Server không lưu trạng thái, nên Server không thể đuổi một user ra khỏi hệ thống ngay lập tức được (ví dụ khi user báo mất máy). Token vẫn hợp lệ cho đến khi nó hết hạn.</p>
+
+                <p>Giải pháp:</p>
+                <ul>
+                    <li>Lưu danh sách các Token bị cấm (Blacklist) vào Redis (nhưng cách này làm mất đi tính "Stateless" của JWT).</li>
+                    <li>Hoặc chấp nhận độ trễ (Token hết hạn sau 5 phút thì hacker chỉ quậy được 5 phút thôi).</li>
+                </ul>
+
+                <h2>5. Nên lưu JWT ở đâu? LocalStorage hay Cookie?</h2>
+                <p>Đây là cuộc chiến thế kỷ của Frontend Dev:</p>
+
+                <p><strong>LocalStorage:</strong></p>
+                <ul>
+                    <li><strong>Ưu điểm:</strong> Dễ code, dễ lấy ra gửi kèm Header.</li>
+                    <li><strong>Nhược điểm:</strong> Dễ bị dính lỗi XSS. Nếu web bạn dính mã độc JS, hacker đọc được LocalStorage -> Mất Token.</li>
+                </ul>
+
+                <p><strong>HttpOnly Cookie:</strong></p>
+                <ul>
+                    <li><strong>Ưu điểm:</strong> JS không đọc được -> Chống XSS cực tốt.</li>
+                    <li><strong>Nhược điểm:</strong> Dễ bị dính lỗi CSRF (cần thêm cơ chế bảo vệ), khó code hơn chút với các domain khác nhau.</li>
+                </ul>
+
+                <p><strong>Lời khuyên:</strong> Nếu làm dự án xịn, bảo mật cao (ngân hàng, ví điện tử) -> HttpOnly Cookie. Nếu làm dự án cá nhân, blog, forum nhỏ -> LocalStorage cho nhanh gọn.</p>
+
+                <h2>Kết luận</h2>
+                <p>JWT giống như con dao hai lưỡi. Nó giúp hệ thống nhanh hơn, nhẹ hơn, dễ mở rộng (Scale) hơn, nhưng đòi hỏi lập trình viên phải hiểu rõ bản chất để tránh các lỗ hổng bảo mật.</p>
+
+                <p>Hy vọng bài viết này giúp anh em hiểu rõ "nội tạng" của JWT. Nếu thấy hay, đừng quên chia sẻ bài viết để mình có động lực ra tiếp phần về Refresh Token nhé!</p>
+            </div>
+        </article>
+    </main>
+    <div data-include="../components/footer.html"></div>
+    <script src="../js/main.js"></script>
+    <script src="../js/animation.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../assets/highlight/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

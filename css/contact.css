@@ -1,0 +1,112 @@
+/* Contact Page Styles */
+.contact-info {
+    max-width: 800px;
+    margin: 50px auto 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    padding: 0 20px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: transform 0.3s ease;
+    min-height: 80px;
+}
+
+.contact-item:hover {
+    transform: translateY(-2px);
+}
+
+.contact-item svg {
+    color: var(--accent);
+    flex-shrink: 0;
+}
+
+.contact-item h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: var(--primary);
+}
+
+.contact-item p {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.contact-item a {
+    color: var(--accent);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-item a:hover {
+    color: var(--primary);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .contact-info {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        margin: 30px auto 0 !important;
+        padding: 0 20px !important;
+        max-width: none !important;
+    }
+
+    .contact-item {
+        padding: 15px !important;
+        flex-direction: column !important;
+        text-align: center !important;
+        gap: 10px !important;
+        min-height: auto !important;
+    }
+
+    .contact-item svg {
+        width: 32px !important;
+        height: 32px !important;
+    }
+
+    .contact-item h3 {
+        font-size: 16px !important;
+    }
+
+    .contact-item p {
+        font-size: 14px !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-info {
+        padding: 0 15px !important;
+        gap: 15px !important;
+    }
+
+    .contact-item {
+        padding: 12px !important;
+    }
+
+    .contact-item svg {
+        width: 28px !important;
+        height: 28px !important;
+    }
+}
+
+@media (min-width: 1200px) {
+    .contact-info {
+        max-width: 1000px !important;
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 40px !important;
+    }
+
+    .contact-item {
+        padding: 25px !important;
+    }
+}

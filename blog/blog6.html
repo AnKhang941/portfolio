@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node.js: "Đơn luồng" (Single-Threaded) nhưng tại sao lại cân được hàng nghìn request?</title>
+    <meta name="description" content="Giải thích kiến trúc Event-Driven Non-Blocking I/O của Node.js và tại sao nó nhanh.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/blog.css">
+    <link rel="stylesheet" href="../css/table.css">
+    <link href="../assets/highlight/vs.min.css" rel="stylesheet" id="code-theme" />
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeLink = document.getElementById('code-theme');
+            if (savedTheme === 'dark') {
+                themeLink.href = '../assets/highlight/atom-one-dark.min.css';
+                document.documentElement.classList.add('dark');
+            } else {
+                themeLink.href = '../assets/highlight/vs.min.css';
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="../components/header.html"></div>
+    <main>
+        <article class="blog-detail">
+            <header class="blog-header">
+                <div class="header-content">
+                    <h1>Node.js: "Đơn luồng" (Single-Threaded) nhưng tại sao lại cân được hàng nghìn request?</h1>
+                    <div class="blog-meta">
+                        <span class="date">December 22, 2025</span>
+                        <span class="author">By Nguyễn An Khang</span>
+                    </div>
+                </div>
+            </header>
+            <div class="blog-content">
+                <p>Chào bạn, đây là phiên bản "Deep Dive" (Chuyên sâu) cho chủ đề kiến trúc của Node.js. Bài viết này không chỉ giải thích hiện tượng (Node.js nhanh) mà còn giải thích bản chất bên dưới (Tại sao nó nhanh), giúp bạn ghi điểm tuyệt đối khi bị hỏi về Event Loop trong các buổi phỏng vấn.</p>
+
+                <p>Có một nghịch lý khiến những người mới chuyển từ Java, C# hay PHP sang Node.js cảm thấy "lú cái đầu":</p>
+
+                <p>"Node.js là đơn luồng (Single-Threaded). Tức là nó chỉ có 1 nhân viên làm việc. Vậy tại sao các ông lớn như Netflix, Uber, LinkedIn lại dùng nó để xử lý hàng triệu kết nối cùng lúc? Chẳng lẽ 1 nhân viên của Node.js làm việc bằng 100 nhân viên của Java?"</p>
+
+                <p>Câu trả lời là: Không. Một nhân viên Node.js không hề "ba đầu sáu tay". Sức mạnh của nó nằm ở cách nó tổ chức công việc (Management) cực kỳ thông minh, dựa trên một kiến trúc có tên là Event-Driven Non-Blocking I/O.</p>
+
+                <p>Hôm nay, hãy cùng mình mổ xẻ xem bên trong cỗ máy này có gì nhé.</p>
+
+                <h2>1. Hiểu đúng về "Đơn luồng" (Single-Threaded)</h2>
+                <p>Khi ta nói Node.js đơn luồng, ý chính xác là: Luồng chạy mã JavaScript (Main Thread) là duy nhất. Nó sử dụng V8 Engine của Google để thực thi code. V8 có một cái Call Stack (Ngăn xếp gọi hàm). Vì chỉ có 1 stack, nên tại một thời điểm, Node.js chỉ có thể làm đúng 1 việc.</p>
+
+                <pre><code class="language-javascript">console.log('A') -> Xong.
+
+console.log('B') -> Xong.</code></pre>
+
+                <p>Nếu bạn viết một vòng lặp while(true) hoặc bắt nó tính số Pi đến 1 tỷ chữ số, Main Thread sẽ bị bận (Blocked). Toàn bộ Server sẽ đứng hình. Không ai truy cập được nữa.</p>
+
+                <p>Vậy làm sao nó xử lý Database, đọc file, gọi API (những việc tốn cả giây đồng hồ) mà không bị đơ?</p>
+
+                <h2>2. Bí mật sau cánh gà: Libuv và Biệt đội lính đánh thuê</h2>
+                <p>Đây là điều ít tutorial nhắc tới. Node.js không làm việc một mình. Nó có một "trợ lý đắc lực" được viết bằng ngôn ngữ C++ tên là Libuv.</p>
+
+                <p>Mô hình hoạt động thực tế như sau:</p>
+
+                <ul>
+                    <li><strong>Node.js (Main Thread):</strong> Chỉ đóng vai trò là người quản lý, giao việc.</li>
+                    <li><strong>Libuv (Kernel/Thread Pool):</strong> Là đội ngũ công nhân hùng hậu làm các việc nặng nhọc (I/O Operations).</li>
+                </ul>
+
+                <p>Libuv có một cái hồ chứa các luồng (Thread Pool - mặc định là 4 luồng, có thể tăng lên). Khi đụng đến việc đọc file hay truy vấn DB, Libuv sẽ lôi việc đó ra khỏi Main Thread và giao cho một luồng trong Thread Pool hoặc nhờ hệ điều hành (OS Kernel) xử lý.</p>
+
+                <h2>3. Mô hình Nhà hàng (The Restaurant Analogy)</h2>
+                <p>Để dễ hình dung, hãy so sánh Web Server truyền thống (Multi-threaded như Java/PHP cũ) và Node.js.</p>
+
+                <p><strong>Nhà hàng truyền thống (Java/PHP)</strong></p>
+                <ul>
+                    <li>Mỗi khi có khách (Request) đến, nhà hàng thuê riêng một bồi bàn (Thread) để phục vụ khách đó từ A-Z.</li>
+                    <li>Khách gọi món Bít tết.</li>
+                    <li>Bồi bàn chạy vào bếp, đứng đợi đầu bếp làm xong (mất 15 phút).</li>
+                    <li>Trong 15 phút đó, bồi bàn đứng chơi, không làm gì cả (Blocked).</li>
+                    <li>Bít tết xong, bưng ra cho khách.</li>
+                </ul>
+
+                <p>=> Vấn đề: Nếu có 1000 khách, bạn cần 1000 bồi bàn. Tốn tiền lương (RAM/CPU) kinh khủng. Nếu hết bồi bàn, khách thứ 1001 phải đứng đợi ngoài cửa.</p>
+
+                <p><strong>Nhà hàng Node.js</strong></p>
+                <ul>
+                    <li>Nhà hàng này chỉ có duy nhất 1 anh bồi bàn (Main Thread), nhưng anh ta cực kỳ lanh lợi.</li>
+                    <li>Khách A gọi món Bít tết.</li>
+                    <li>Bồi bàn ghi phiếu, ném vào bếp (Libuv) và hét lên: "Khi nào xong thì bấm chuông (Callback) nhé!".</li>
+                    <li>Bồi bàn không đứng đợi. Anh ta quay ngay ra bàn khác đón khách B, khách C...</li>
+                    <li>Khi bếp làm xong món của A, bếp bấm chuông. Bồi bàn (lúc này đang rảnh tay) sẽ bưng món ra cho A.</li>
+                </ul>
+
+                <p>=> Kết quả: Chỉ 1 bồi bàn có thể phục vụ hàng nghìn khách, miễn là anh ta không phải trực tiếp vào bếp nấu ăn.</p>
+
+                <h2>4. Event Loop - Trái tim của hệ thống</h2>
+                <p>Làm sao anh bồi bàn biết khi nào món ăn xong để bưng ra? Đó là nhờ Event Loop (Vòng lặp sự kiện).</p>
+
+                <p>Quy trình code chạy sẽ như thế này:</p>
+
+                <pre><code class="language-javascript">console.log('1. Gọi món (Start)');
+
+// Tác vụ tốn thời gian (Vào bếp)
+setTimeout(() => {
+    console.log('2. Món đã xong (Callback)');
+}, 2000);
+
+console.log('3. Phục vụ khách khác (End)');</code></pre>
+
+                <p>Điều gì xảy ra bên dưới?</p>
+
+                <ul>
+                    <li>console.log('1...') vào Call Stack -> Chạy ngay -> In ra màn hình.</li>
+                    <li>setTimeout vào Call Stack. Node.js nhận ra đây là tác vụ cần chờ (Timer). Nó ném sang cho Libuv quản lý bộ đếm giờ. Main Thread rảnh tay.</li>
+                    <li>console.log('3...') vào Call Stack -> Chạy ngay -> In ra màn hình.</li>
+                    <li>Sau 2 giây, Libuv thấy hết giờ. Nó đẩy cái hàm console.log('2...') vào một hàng đợi gọi là Callback Queue.</li>
+                    <li>Event Loop là một vòng lặp vô tận, nó cứ check liên tục 2 điều:</li>
+                    <ul>
+                        <li>Call Stack có đang trống không? (Anh bồi bàn có đang rảnh không?)</li>
+                        <li>Queue có gì đang chờ không? (Có món nào bếp nấu xong chưa?)</li>
+                    </ul>
+                    <li>Nếu Stack trống và Queue có hàng -> Event Loop gắp cái hàm trong Queue bỏ lên Stack để chạy. -> In ra 2. Món đã xong.</li>
+                </ul>
+
+                <p>Đó là lý do tại sao kết quả in ra là: 1 -> 3 -> 2.</p>
+
+                <h2>5. Khi nào Node.js "tắt điện"?</h2>
+                <p>Mô hình này rất tuyệt vời cho các tác vụ I/O Intensive (Vào ra dữ liệu nhiều) như: Web API, Real-time Chat, Streaming.</p>
+
+                <p>Nhưng nó là thảm họa với tác vụ CPU Intensive (Tính toán nặng). Quay lại ví dụ nhà hàng: Nếu khách A không gọi món, mà nhờ anh bồi bàn giải một bài toán tích phân, hoặc ngồi gọt 10kg khoai tây.</p>
+
+                <ul>
+                    <li>Anh bồi bàn (Main Thread) phải ngồi gọt khoai (tính toán).</li>
+                    <li>Khách B, C, D đến gọi món -> Bồi bàn lơ luôn vì đang bận gọt khoai.</li>
+                </ul>
+
+                <p>Hậu quả: Toàn bộ nhà hàng bị tê liệt (Block Event Loop).</p>
+
+                <p>Giải pháp: Với các tác vụ nặng (Xử lý ảnh, nén video, mã hóa), Node.js cung cấp Worker Threads (từ bản 10.5) để tạo ra các "phân thân" xử lý riêng, không làm phiền luồng chính.</p>
+
+                <h2>Kết luận</h2>
+                <p>Node.js nhanh không phải vì nó chạy nhanh hơn, mà vì nó không lãng phí thời gian chờ đợi.</p>
+
+                <ul>
+                    <li><strong>Single-Threaded:</strong> Giúp tiết kiệm RAM, dễ lập trình (không lo Deadlock như đa luồng).</li>
+                    <li><strong>Non-Blocking I/O:</strong> Giúp xử lý hàng ngàn kết nối song song.</li>
+                </ul>
+
+                <p>Hiểu được kiến trúc này, bạn sẽ biết cách viết code Node.js "chuẩn chỉ": Luôn dùng Async, tránh Block Main Thread, và biết khi nào nên dùng công nghệ khác hỗ trợ.</p>
+            </div>
+        </article>
+    </main>
+    <div data-include="../components/footer.html"></div>
+    <script src="../js/main.js"></script>
+    <script src="../js/animation.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../assets/highlight/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

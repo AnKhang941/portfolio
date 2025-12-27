@@ -1,0 +1,40 @@
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    margin: 20px 0;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: #5a5555;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/* Dark mode styles */
+.dark table {
+    background: #333;
+    color: #fff;
+}
+
+.dark th {
+    background-color: #555;
+    color: #fff;
+}
+
+.dark tr:nth-child(even) {
+    background-color: #444;
+}
+
+.dark td {
+    border-color: #666;
+}

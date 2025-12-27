@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Java OOP: Chuyện cái khuôn bánh và chiếc bánh quy (Class vs Object) - Hiểu một lần nhớ cả đời</title>
+    <meta name="description" content="Giải thích Class và Object trong Java OOP qua ví dụ làm bánh, hiểu sâu về bộ nhớ và tại sao cần OOP.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/blog.css">
+    <link href="../assets/highlight/vs.min.css" rel="stylesheet" id="code-theme" />
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeLink = document.getElementById('code-theme');
+            if (savedTheme === 'dark') {
+                themeLink.href = '../assets/highlight/atom-one-dark.min.css';
+                document.documentElement.classList.add('dark');
+            } else {
+                themeLink.href = '../assets/highlight/vs.min.css';
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="../components/header.html"></div>
+    <main>
+        <article class="blog-detail">
+            <header class="blog-header">
+                <div class="header-content">
+                    <h1>Java OOP: Chuyện cái khuôn bánh và chiếc bánh quy (Class vs Object) - Hiểu một lần nhớ cả đời</h1>
+                    <div class="blog-meta">
+                        <span class="date">December 21, 2025</span>
+                        <span class="author">By Nguyễn An Khang</span>
+                    </div>
+                </div>
+            </header>
+            <div class="blog-content">
+                <p>Chào bạn, đây là phiên bản "full không che" cho chủ đề Class và Object. Đây là bài viết nền tảng cực kỳ quan trọng, vì nếu mất gốc chỗ này thì học lên các phần sau (Kế thừa, Đa hình) sẽ rất khổ sở.</p>
+
+                <p>Bài viết này đi sâu vào cả tư duy thiết kế lẫn cách máy tính xử lý trong bộ nhớ, giúp người đọc không chỉ biết code mà còn hiểu máy tính đang làm gì.</p>
+
+                <p>Hồi mới chân ướt chân ráo học Java, mình cứ lơ mơ mãi về hai khái niệm: Class (Lớp) và Object (Đối tượng). Sách giáo khoa thì định nghĩa: "Class là bản thiết kế, Object là thể hiện cụ thể...". Nghe rất trừu tượng và khó nuốt.</p>
+
+                <p>Mãi sau này đi làm, mình mới ngộ ra một chân lý đơn giản. Đừng nghĩ phức tạp, hãy nghĩ về chuyện làm bánh. Hôm nay, mình sẽ giải thích lại cho các bạn theo phong cách "Bếp trưởng" nhé.</p>
+
+                <h2>1. Class (Lớp) - Chính là cái khuôn bánh</h2>
+                <p>Hãy tưởng tượng bạn muốn mở tiệm bán bánh quy hình ngôi sao. Bạn không thể nặn tay từng cái một được, vì cái thì méo, cái thì tròn, lại tốn thời gian. Bạn cần một cái Khuôn (Cutter).</p>
+
+                <p>Trong lập trình, Class chính là cái khuôn đó.</p>
+
+                <p><strong>Đặc điểm:</strong> Cái khuôn quy định hình dáng (ngôi sao), kích thước, thành phần.</p>
+
+                <p><strong>Quan trọng:</strong> Bản thân cái khuôn không ăn được. Nó chỉ là một khái niệm, một bản mô tả về cái bánh thôi.</p>
+
+                <p><strong>Cấu tạo của một Class:</strong> Một cái khuôn (Class) thường có 2 phần chính:</p>
+
+                <ul>
+                    <li><strong>Thuộc tính (Attributes/Fields):</strong> Bánh màu gì? Vị gì? Nặng bao nhiêu? (Dữ liệu).</li>
+                    <li><strong>Phương thức (Methods/Behaviors):</strong> Bánh này dùng để làm gì? (Hành động).</li>
+                </ul>
+
+                <pre><code class="language-java">// Đây là cái khuôn (Class)
+public class BanhQuy {
+    // 1. Thuộc tính (Đặc điểm)
+    String mauSac;
+    String huongVi;
+    double giaTien;
+
+    // 2. Phương thức (Hành động)
+    void gioiThieu() {
+        System.out.println("Tôi là bánh vị " + huongVi + ", màu " + mauSac);
+    }
+    
+    void an() {
+        System.out.println("Rộp rộp... Ngon quá!");
+    }
+}</code></pre>
+
+                <h2>2. Object (Đối tượng) - Chính là chiếc bánh thật</h2>
+                <p>Bây giờ, bạn lấy bột, đè cái khuôn BanhQuy lên bột. Bùm! Bạn có một chiếc bánh thật. Trong lập trình, hành động "dập khuôn" đó gọi là Khởi tạo (Instantiation) với từ khóa thần thánh new.</p>
+
+                <p>Chiếc bánh vừa tạo ra chính là Object.</p>
+
+                <p><strong>Đặc điểm:</strong> Nó là vật thể thật, chiếm chỗ trong không gian (bộ nhớ RAM).</p>
+
+                <p><strong>Quan trọng:</strong> Từ 1 cái khuôn, bạn có thể tạo ra vô số cái bánh.</p>
+
+                <pre><code>public class NhaBep {
+    public static void main(String[] args) {
+        // Dập khuôn lần 1: Tạo ra chiếc bánh cho khách A
+        // 'new BanhQuy()' là lúc cái bánh thực sự được tạo ra
+        BanhQuy banhCuaA = new BanhQuy(); 
+        banhCuaA.mauSac = "Vàng";
+        banhCuaA.huongVi = "Bơ sữa";
+
+        // Dập khuôn lần 2: Tạo ra chiếc bánh cho khách B
+        BanhQuy banhCuaB = new BanhQuy();
+        banhCuaB.mauSac = "Nâu";
+        banhCuaB.huongVi = "Socola";
+        
+        // Gọi hành động
+        banhCuaA.gioiThieu(); // In ra: Bánh vị Bơ sữa
+        banhCuaB.gioiThieu(); // In ra: Bánh vị Socola
+    }
+}</code></pre>
+
+                <p><strong>Sự khác biệt cốt lõi:</strong></p>
+
+                <p>Nếu bạn bẻ đôi cái bánh của khách A (banhCuaA), cái bánh của khách B (banhCuaB) có bị vỡ theo không? Đương nhiên là Không.</p>
+
+                <p>Object độc lập hoàn toàn với nhau về dữ liệu, dù chúng được sinh ra từ cùng một Class.</p>
+
+                <h2>3. Chuyện gì xảy ra trong bộ nhớ? (Deep Dive)</h2>
+                <p>Đây là phần phân loại Dev "thợ" và Dev "kỹ sư". Hiểu được bộ nhớ, bạn sẽ tránh được lỗi NullPointerException huyền thoại.</p>
+
+                <p>Khi bạn viết dòng code: BanhQuy banh = new BanhQuy();</p>
+
+                <p>Máy tính thực hiện 2 việc ở 2 vùng nhớ khác nhau:</p>
+
+                <ul>
+                    <li><strong>Heap (Vùng nhớ Đống):</strong> Máy tính dành một khoảng trống lớn để lưu trữ toàn bộ thông tin của chiếc bánh thật (new BanhQuy()). Đây là Object.</li>
+                    <li><strong>Stack (Vùng nhớ Ngăn xếp):</strong> Máy tính tạo ra một biến nhỏ tên là banh. Biến này không chứa cái bánh, nó chỉ chứa cái địa chỉ (hoặc cái điều khiển từ xa) trỏ đến cái bánh nằm bên Heap. Đây là Reference (Tham chiếu).</li>
+                </ul>
+
+                <p><strong>Ví dụ dễ hiểu:</strong></p>
+
+                <ul>
+                    <li>Object (Heap): Là cái Tivi xịn sò đặt trong phòng khách.</li>
+                    <li>Variable (Stack): Là cái Remote cầm trên tay.</li>
+                    <li>Dấu bằng (=): Là hành động kết nối Remote với Tivi.</li>
+                </ul>
+
+                <p><strong>Hệ quả thú vị:</strong></p>
+
+                <pre><code class="language-java">BanhQuy banh1 = new BanhQuy(); // Tivi 1, Remote 1
+BanhQuy banh2 = banh1;         // Copy Remote 1 đưa cho Remote 2
+
+banh2.mauSac = "Đỏ"; 
+// Hỏi: banh1.mauSac bây giờ là màu gì?
+// Đáp: Màu Đỏ!</code></pre>
+
+                <p>Tại sao? Vì banh1 và banh2 là hai cái Remote khác nhau, nhưng cùng trỏ vào MỘT cái Tivi duy nhất. Ai bấm chuyển kênh thì người kia cũng thấy kênh đổi.</p>
+
+                <h2>4. Tại sao cần OOP? Code kiểu cũ không được à?</h2>
+                <p>Bạn có thể hỏi: "Sao phải rắc rối tạo Class làm gì? Tôi khai báo biến rời rạc cũng được mà?"</p>
+
+                <p>Được, nhưng hãy tưởng tượng bạn quản lý 1.000 cái bánh.</p>
+
+                <p><strong>Cách cũ (Procedural):</strong> Bạn phải quản lý 1.000 biến màu, 1.000 biến vị, 1.000 biến giá tiền. String mauBanh1, mauBanh2... mauBanh1000; -> Điên đầu ngay!</p>
+
+                <p><strong>Cách OOP:</strong> Bạn chỉ cần quản lý một danh sách List&lt;BanhQuy&gt;. Mọi thông tin màu sắc, hương vị đã được đóng gói gọn gàng trong từng object rồi. Code sạch, dễ bảo trì, dễ nâng cấp.</p>
+
+                <h2>Kết luận</h2>
+                <p>Tóm lại, để giỏi Java OOP, hãy nhớ kỹ câu thần chú này:</p>
+
+                <ul>
+                    <li><strong>Class:</strong> Là Khái niệm, là Khuôn mẫu (File .java bạn viết).</li>
+                    <li><strong>Object:</strong> Là Thực thể, là Dữ liệu thật đang chạy trong RAM (new ClassName()).</li>
+                </ul>
+
+                <p>Lần tới khi bạn new một cái gì đó, hãy nhớ rằng bạn đang dập một cái khuôn để tạo ra một chiếc bánh mới trong bộ nhớ Heap nhé!</p>
+            </div>
+        </article>
+    </main>
+    <div data-include="../components/footer.html"></div>
+    <script src="../js/main.js"></script>
+    <script src="../js/animation.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../assets/highlight/highlight.min.js"></script>
+    <script src="../assets/highlight/java.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

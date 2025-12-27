@@ -1,0 +1,273 @@
+/* Index/Home Page Styles */
+.me {
+    padding: 50px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    text-align: center;
+}
+
+.avatar {
+    width: 300px;
+    height: 300px;
+    border-radius: 50%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+    transition: transform 0.3s ease;
+    object-fit: contain;
+    display: block;
+    margin-block: auto;
+}
+
+.avatar:hover {
+    transform: scale(1.55);
+}
+
+.hero-content {
+    flex: 1;
+    text-align: center;
+}
+
+h1 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.bio {
+    color: var(--text-secondary);
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+.location {
+    color: var(--text-secondary);
+    margin-bottom: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.location img {
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+}
+
+.skills {
+    margin-top: 50px;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.skills h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.skill-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.skill-item svg {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 20px;
+}
+
+.skill-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.skill-item i {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+.skill-item span {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--primary);
+}
+
+.achievements {
+    margin-top: 50px;
+    animation: fadeInUp 0.8s ease-out 0.2s both;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.achievements h2 {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
+.achievements-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.badge-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background: var(--background);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.badge-wrapper:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+html.dark .location img {
+    filter: invert(1);
+}
+
+@media (max-width: 768px) {
+    .me {
+        padding: 30px 15px;
+    }
+
+    .hero {
+        gap: 20px;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+        line-height: 1.2;
+    }
+
+    .hero h2 {
+        font-size: 20px;
+        line-height: 1.4;
+    }
+
+    .skills {
+        padding: 0 15px;
+    }
+
+    .skills-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .skill-item {
+        padding: 15px;
+        min-height: 80px;
+    }
+
+    .skill-item i {
+        font-size: 32px;
+    }
+
+    .skill-item span {
+        font-size: 14px;
+    }
+
+    .achievements {
+        padding: 0 15px;
+    }
+
+    .achievements-container {
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        gap: 15px;
+    }
+
+    .badge-wrapper {
+        padding: 15px;
+    }
+}
+
+@media (min-width: 769px) {
+    .hero {
+        flex-direction: row;
+        text-align: left;
+        justify-content: center;
+        align-items: center;
+        gap: 60px;
+        max-width: 1000px;
+    }
+
+    .avatar {
+        flex-shrink: 0;
+        margin-bottom: 0;
+    }
+
+    .hero-content {
+        text-align: left;
+        max-width: 500px;
+    }
+
+    .location {
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 1024px) {
+    .hero {
+        max-width: 90%;
+        gap: 40px;
+    }
+
+    .skills-grid {
+        grid-template-columns: repeat(3, 1fr);
+        max-width: 90%;
+    }
+}
+
+@media (max-width: 1200px) {
+    .skills-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}

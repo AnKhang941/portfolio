@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>.NET Web Application - [Your Name]</title>
+    <meta name="description" content="Detailed view of .NET Web Application project.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/projects.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="../components/header.html"></div>
+    <main>
+        <section class="hero">
+            <div class="header-content">
+                <h1>.NET Web Application</h1>
+                <p>Web application for project management with user roles and task tracking.</p>
+            </div>
+        </section>
+        <section class="project-detail">
+            <img src="assets/images/project-2.png" alt=".NET Web Application">
+            <div class="project-info">
+                <h2>Project Overview</h2>
+                <p>This ASP.NET Core web application provides a comprehensive project management solution. It includes user authentication, role-based permissions, task assignment and tracking, project timelines, and reporting features. The application uses Entity Framework for data access and SQL Server for data storage.</p>
+                <h3>Technologies Used</h3>
+                <div class="tech-stack">
+                    <span>ASP.NET Core</span>
+                    <span>C#</span>
+                    <span>Entity Framework</span>
+                    <span>SQL Server</span>
+                    <span>Bootstrap</span>
+                </div>
+                <h3>Key Features</h3>
+                <ul>
+                    <li>User authentication and role management</li>
+                    <li>Project creation and management</li>
+                    <li>Task assignment and progress tracking</li>
+                    <li>Team collaboration tools</li>
+                    <li>Dashboard with project analytics</li>
+                    <li>Export reports to PDF/Excel</li>
+                </ul>
+                <a href="https://github.com/yourusername/dotnet-webapp" class="cta-button" target="_blank">View on GitHub</a>
+            </div>
+        </section>
+    </main>
+    <div data-include="../components/footer.html"></div>
+    <script src="../js/main.js"></script>
+    <script src="../js/animation.js"></script>
+    <script src="../js/nav.js"></script>
+</body>
+</html>

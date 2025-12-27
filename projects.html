@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>[Your Name] - Projects</title>
+    <meta name="description" content="Projects by [Your Name], UX/UI Designer & Product Designer.">
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/layout.css">
+    <link rel="stylesheet" href="css/components.css">
+    <link rel="stylesheet" href="css/projects.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="components/header.html"></div>
+    <main>
+        <section class="hero">
+            <h1>My Projects</h1>
+        </section>
+        <section class="project-cards">
+            <div class="project-card">
+                <a href="projects/project1.html" class="card-link">
+                    <img src="assets/images/project-1.png" alt="Flutter E-commerce App">
+                    <h3>Flutter E-commerce App</h3>
+                    <div class="tech-stack">
+                        <span>Flutter</span>
+                        <span>Firebase</span>
+                        <span>Dart</span>
+                    </div>
+                    <p>A cross-platform e-commerce app with real-time inventory and user authentication.</p>
+                </a>
+                <a href="https://github.com/yourusername/flutter-ecommerce" class="project-link" target="_blank">View on GitHub</a>
+            </div>
+            <div class="project-card">
+                <a href="projects/project2.html" class="card-link">
+                    <img src="assets/images/project-2.png" alt="Node.js REST API">
+                    <h3>Node.js REST API</h3>
+                    <div class="tech-stack">
+                        <span>Node.js</span>
+                        <span>Express</span>
+                        <span>MongoDB</span>
+                    </div>
+                    <p>RESTful API for a blog platform with JWT authentication and CRUD operations.</p>
+                </a>
+                <a href="https://github.com/yourusername/nodejs-rest-api" class="project-link" target="_blank">View on GitHub</a>
+            </div>
+            <div class="project-card">
+                <a href="projects/project3.html" class="card-link">
+                    <img src="assets/images/project-1.png" alt="React Portfolio Website">
+                    <h3>React Portfolio Website</h3>
+                    <div class="tech-stack">
+                        <span>React</span>
+                        <span>CSS</span>
+                        <span>JavaScript</span>
+                    </div>
+                    <p>Responsive portfolio website with dark mode and smooth animations.</p>
+                </a>
+                <a href="https://github.com/yourusername/react-portfolio" class="project-link" target="_blank">View on GitHub</a>
+            </div>
+            <div class="project-card">
+                <a href="projects/project4.html" class="card-link">
+                    <img src="assets/images/project-2.png" alt=".NET Web Application">
+                    <h3>.NET Web Application</h3>
+                    <div class="tech-stack">
+                        <span>.NET</span>
+                        <span>C#</span>
+                        <span>SQL Server</span>
+                    </div>
+                    <p>Web app for project management with user roles and task tracking.</p>
+                </a>
+                <a href="https://github.com/yourusername/dotnet-webapp" class="project-link" target="_blank">View on GitHub</a>
+            </div>
+        </section>
+    </main>
+    <div data-include="components/footer.html"></div>
+    <script src="js/main.js"></script>
+    <script src="js/animation.js"></script>
+    <script src="js/nav.js"></script>
+</body>
+</html>

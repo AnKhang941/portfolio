@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Node.js REST API - [Your Name]</title>
+    <meta name="description" content="Detailed view of Node.js REST API project.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/projects.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="../components/header.html"></div>
+    <main>
+        <section class="hero">
+            <div class="header-content">
+                <h1>Node.js REST API</h1>
+                <p>RESTful API for a blog platform with authentication and CRUD operations.</p>
+            </div>
+        </section>
+        <section class="project-detail">
+            <img src="assets/images/project-2.png" alt="Node.js REST API">
+            <div class="project-info">
+                <h2>Project Overview</h2>
+                <p>This Node.js REST API serves as the backend for a blog platform. It implements JWT-based authentication, role-based access control, and full CRUD operations for posts, comments, and user management. The API is built with Express.js and uses MongoDB for data persistence.</p>
+                <h3>Technologies Used</h3>
+                <div class="tech-stack">
+                    <span>Node.js</span>
+                    <span>Express.js</span>
+                    <span>MongoDB</span>
+                    <span>JWT</span>
+                    <span>Bcrypt</span>
+                </div>
+                <h3>Key Features</h3>
+                <ul>
+                    <li>JWT authentication and authorization</li>
+                    <li>User registration and login</li>
+                    <li>CRUD operations for blog posts</li>
+                    <li>Comment system</li>
+                    <li>Input validation and error handling</li>
+                    <li>Rate limiting and security middleware</li>
+                </ul>
+                <a href="https://github.com/yourusername/nodejs-rest-api" class="cta-button" target="_blank">View on GitHub</a>
+            </div>
+        </section>
+    </main>
+    <div data-include="../components/footer.html"></div>
+    <script src="../js/main.js"></script>
+    <script src="../js/animation.js"></script>
+    <script src="../js/nav.js"></script>
+</body>
+</html>

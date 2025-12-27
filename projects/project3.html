@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React Portfolio Website - [Your Name]</title>
+    <meta name="description" content="Detailed view of React Portfolio Website project.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/projects.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="../components/header.html"></div>
+    <main>
+        <section class="hero">
+            <div class="header-content">
+                <h1>React Portfolio Website</h1>
+                <p>Responsive portfolio website with dark mode and smooth animations.</p>
+            </div>
+        </section>
+        <section class="project-detail">
+            <img src="assets/images/project-1.png" alt="React Portfolio Website">
+            <div class="project-info">
+                <h2>Project Overview</h2>
+                <p>This React-based portfolio website showcases modern web development practices with a focus on user experience. It features a responsive design that works seamlessly across all devices, a dark mode toggle with local storage persistence, and smooth CSS animations for enhanced interactivity.</p>
+                <h3>Technologies Used</h3>
+                <div class="tech-stack">
+                    <span>React</span>
+                    <span>CSS3</span>
+                    <span>JavaScript (ES6+)</span>
+                    <span>React Router</span>
+                    <span>Framer Motion</span>
+                </div>
+                <h3>Key Features</h3>
+                <ul>
+                    <li>Responsive design for all screen sizes</li>
+                    <li>Dark/Light mode toggle with persistence</li>
+                    <li>Smooth page transitions and animations</li>
+                    <li>Single Page Application (SPA) routing</li>
+                    <li>Optimized performance with lazy loading</li>
+                    <li>SEO-friendly with React Helmet</li>
+                </ul>
+                <a href="https://github.com/yourusername/react-portfolio" class="cta-button" target="_blank">View on GitHub</a>
+            </div>
+        </section>
+    </main>
+    <div data-include="../components/footer.html"></div>
+    <script src="../js/main.js"></script>
+    <script src="../js/animation.js"></script>
+    <script src="../js/nav.js"></script>
+</body>
+</html>

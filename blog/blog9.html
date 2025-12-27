@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nghệ thuật viết Commit Message: Đừng để đồng nghiệp muốn "tác động vật lý" bạn</title>
+    <meta name="description" content="Hướng dẫn viết commit message chuẩn theo Conventional Commits để dễ quản lý và tự động hóa.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/blog.css">
+    <link rel="stylesheet" href="../css/table.css">
+    <link href="../assets/highlight/vs.min.css" rel="stylesheet" id="code-theme" />
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeLink = document.getElementById('code-theme');
+            if (savedTheme === 'dark') {
+                themeLink.href = '../assets/highlight/atom-one-dark.min.css';
+                document.documentElement.classList.add('dark');
+            } else {
+                themeLink.href = '../assets/highlight/vs.min.css';
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="../components/header.html"></div>
+    <main>
+        <article class="blog-detail">
+            <header class="blog-header">
+                <div class="header-content">
+                    <h1>Nghệ thuật viết Commit Message: Đừng để đồng nghiệp muốn "tác động vật lý" bạn</h1>
+                    <div class="blog-meta">
+                        <span class="date">December 26, 2025</span>
+                        <span class="author">By Nguyễn An Khang</span>
+                    </div>
+                </div>
+            </header>
+            <div class="blog-content">
+                <p>Chào bạn, chủ đề này cực kỳ "đời thường" và chạm đúng nỗi đau của bất kỳ team lập trình nào. Một bài viết tốt về chủ đề này không chỉ giúp người đọc cười (vì thấy mình trong đó) mà còn trang bị cho họ kỹ năng làm việc nhóm chuyên nghiệp.</p>
+
+                <p>Dưới đây là nội dung chi tiết cho bài blog, được viết theo phong cách hài hước nhưng đầy đủ kiến thức chuẩn (Conventional Commits).</p>
+
+                <p>Hãy tưởng tượng một kịch bản kinh dị lúc 3 giờ sáng: Server sập. Sếp gọi cháy máy. Bạn dò lại lịch sử code (git log) để xem ai đã sửa cái gì vào chiều nay mà gây ra nông nỗi này. Và đây là những gì bạn thấy:</p>
+
+                <pre><code class="language-bash">commit a1b2c3d: fix bug
+commit e4f5g6h: fix bug again
+commit i7j8k9l: update
+commit m1n2o3p: ...
+commit q4r5s6t: final fix
+commit u7v8w9x: final fix that (thề là lần cuối)</code></pre>
+
+                <p>Lúc này, bạn có muốn tìm ngay địa chỉ nhà của chủ nhân những dòng commit kia để "tác động vật lý" không? Chắc chắn là có. Không ai biết "fix bug" là fix cái gì? Tại sao lại fix? Sửa ở file nào?</p>
+
+                <p>Viết Commit Message không chỉ là gõ cho xong để đẩy code lên. Đó là nghệ thuật giao tiếp. Hãy viết sao cho 6 tháng sau đọc lại, bạn không tự chửi chính mình.</p>
+
+                <p>Hôm nay, mình sẽ giới thiệu quy chuẩn Conventional Commits (Semantic Commits) - Tiêu chuẩn vàng để viết commit mà các công ty lớn đang dùng.</p>
+
+                <h2>1. Tại sao phải viết chuẩn? (Ngoài việc để không bị đánh)</h2>
+                <ul>
+                    <li><strong>Dễ truy vết (Traceability):</strong> Nhìn vào lịch sử là biết ngay tính năng Login được thêm vào lúc nào, lỗi NullPointer được sửa ở đâu.</li>
+                    <li><strong>Review code nhanh hơn:</strong> Người review nhìn tiêu đề là biết mức độ ảnh hưởng của code.</li>
+                    <li><strong>Tự động hóa (Automation):</strong> Đây là phần "ăn tiền" nhất. Nếu bạn viết chuẩn, các công cụ CI/CD có thể tự động tạo ra Change Log (Danh sách thay đổi) xịn sò để gửi cho khách hàng mà bạn không cần gõ tay một chữ nào.</li>
+                </ul>
+
+                <h2>2. Công thức vàng: Cấu trúc của một Commit</h2>
+                <p>Một commit chuẩn sẽ có dạng:</p>
+
+                <pre><code class="language-bash">&lt;type&gt;(&lt;scope&gt;): &lt;subject&gt;</code></pre>
+
+                <ul>
+                    <li><strong>Type (Bắt buộc):</strong> Loại thay đổi (Code mới, sửa lỗi, hay dọn dẹp...).</li>
+                    <li><strong>Scope (Tùy chọn):</strong> Phạm vi thay đổi (Ví dụ: Auth, UserPage, Database).</li>
+                    <li><strong>Subject (Bắt buộc):</strong> Mô tả ngắn gọn (thường dưới 50 ký tự).</li>
+                </ul>
+
+                <p>Ví dụ chuẩn: feat(auth): add google login button</p>
+
+                <h2>3. Từ điển Type - Dân chuyên dùng từ gì?</h2>
+                <p>Đừng dùng tiếng Việt không dấu hay Tiếng Anh bồi. Hãy dùng các từ khóa chuẩn sau (đặt ở đầu câu):</p>
+
+                <ul>
+                    <li><strong>feat (Feature)</strong><br>
+                    Dùng khi bạn thêm một tính năng mới.<br>
+                    Ví dụ: feat: add dark mode switch (Thêm nút chuyển chế độ tối).</li>
+
+                    <li><strong>fix (Bug fix)</strong><br>
+                    Dùng khi bạn sửa một lỗi.<br>
+                    Ví dụ: fix: resolve crash when user uploads large image (Sửa lỗi crash khi upload ảnh lớn).</li>
+
+                    <li><strong>docs (Documentation)</strong><br>
+                    Dùng khi bạn chỉ thêm/sửa tài liệu (README, comment code) mà không đụng vào logic code.<br>
+                    Ví dụ: docs: update API documentation for login endpoint.</li>
+
+                    <li><strong>refactor (Refactoring)</strong><br>
+                    Dùng khi bạn sửa code cho sạch hơn, đẹp hơn, tối ưu hơn nhưng không sửa lỗi và cũng không thêm tính năng mới.<br>
+                    Ví dụ: refactor: simplify calculation logic in OrderService.</li>
+
+                    <li><strong>style</strong><br>
+                    Dùng khi bạn chỉ sửa khoảng trắng, dấu chấm phẩy, format lại code (Code linter).<br>
+                    Ví dụ: style: format code with Prettier.</li>
+
+                    <li><strong>chore</strong><br>
+                    Dùng cho các việc lặt vặt không liên quan đến code sản phẩm (sửa file cấu hình build, cập nhật thư viện).<br>
+                    Ví dụ: chore: update react to version 18.</li>
+
+                    <li><strong>perf (Performance)</strong><br>
+                    Dùng khi code của bạn giúp cải thiện hiệu năng.<br>
+                    Ví dụ: perf: reduce image loading time by 50%.</li>
+                </ul>
+
+                <h2>4. Ba quy tắc vàng cho phần nội dung (Subject)</h2>
+                <p><strong>Quy tắc 1: Dùng thể mệnh lệnh (Imperative mood)</strong></p>
+                <p>Hãy viết như bạn đang ra lệnh cho máy tính.</p>
+
+                <p>Sai: Added login button (Đã thêm...), Adding login button (Đang thêm...).</p>
+
+                <p>Đúng: Add login button (Thêm nút login).</p>
+
+                <p>Mẹo: Hãy nhẩm trong đầu câu này: "If applied, this commit will..." (Nếu được áp dụng, commit này sẽ...). -> If applied, this commit will Add login button. (Hợp lý!).</p>
+
+                <p><strong>Quy tắc 2: Không viết hoa chữ cái đầu (Tùy chọn nhưng nên làm)</strong></p>
+                <p>Để tiết kiệm chỗ và nhìn "geek" hơn, nhiều team quy định viết thường toàn bộ tiêu đề.</p>
+
+                <p>feat: add login thay vì feat: Add login.</p>
+
+                <p><strong>Quy tắc 3: Không dùng dấu chấm câu ở cuối</strong></p>
+                <p>Tiêu đề commit giống như tiêu đề bài báo, không cần dấu chấm.</p>
+
+                <p>fix: crash on start.</p>
+
+                <p>fix: crash on start</p>
+
+                <h2>5. Level Nâng cao: Ép buộc cả Team phải tuân thủ</h2>
+                <p>Bạn viết chuẩn, nhưng đồng nghiệp vẫn viết git commit -m "ok". Phải làm sao? Hãy dùng công cụ để chặn ngay từ cửa!</p>
+
+                <p>Nếu làm dự án JavaScript/Node.js/React, hãy cài 2 thư viện: Husky và Commitlint.</p>
+
+                <ul>
+                    <li><strong>Husky:</strong> Một chú chó canh cổng. Mỗi khi ai đó gõ git commit, Husky sẽ chặn lại để kiểm tra.</li>
+                    <li><strong>Commitlint:</strong> Cảnh sát giao thông. Nó kiểm tra xem tin nhắn có đúng chuẩn type: subject không.</li>
+                </ul>
+
+                <p>Nếu ông đồng nghiệp gõ: git commit -m "sửa lỗi tí". Husky sẽ báo lỗi đỏ lòm ngay tại Terminal và không cho phép commit. Thế là cả team bắt buộc phải viết chuẩn.</p>
+
+                <h2>Kết luận</h2>
+                <p>Viết Commit Message cũng giống như việc bạn đánh răng vậy. Ban đầu thấy phiền phức, nhưng làm quen rồi thì thấy nó thơm tho và sạch sẽ. Hãy bắt đầu từ hôm nay: feat:, fix:, refactor:. Đừng để những dòng commit vô nghĩa biến bạn thành kẻ tội đồ lúc 3 giờ sáng!</p>
+            </div>
+        </article>
+    </main>
+    <div data-include="../components/footer.html"></div>
+    <script src="../js/main.js"></script>
+    <script src="../js/animation.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../assets/highlight/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

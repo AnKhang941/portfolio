@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flutter E-commerce App - [Your Name]</title>
+    <meta name="description" content="Detailed view of Flutter E-commerce App project.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/projects.css">
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="../components/header.html"></div>
+    <main>
+        <section class="hero">
+            <div class="header-content">
+                <h1>Flutter E-commerce App</h1>
+                <p>A cross-platform e-commerce application built with Flutter.</p>
+            </div>
+        </section>
+        <section class="project-detail">
+            <img src="assets/images/project-1.png" alt="Flutter E-commerce App">
+            <div class="project-info">
+                <h2>Project Overview</h2>
+                <p>This Flutter-based e-commerce app provides a seamless shopping experience across iOS and Android platforms. It features real-time inventory management, secure user authentication via Firebase, and an intuitive UI designed for optimal user engagement.</p>
+                <h3>Technologies Used</h3>
+                <div class="tech-stack">
+                    <span>Flutter</span>
+                    <span>Firebase</span>
+                    <span>Dart</span>
+                    <span>Provider (State Management)</span>
+                </div>
+                <h3>Key Features</h3>
+                <ul>
+                    <li>User authentication and profile management</li>
+                    <li>Product catalog with search and filtering</li>
+                    <li>Shopping cart and checkout process</li>
+                    <li>Order history and tracking</li>
+                    <li>Real-time inventory updates</li>
+                </ul>
+                <a href="https://github.com/yourusername/flutter-ecommerce" class="cta-button" target="_blank">View on GitHub</a>
+            </div>
+        </section>
+    </main>
+    <div data-include="../components/footer.html"></div>
+    <script src="../js/main.js"></script>
+    <script src="../js/animation.js"></script>
+    <script src="../js/nav.js"></script>
+</body>
+</html>

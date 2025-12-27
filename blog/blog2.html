@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RESTful API: Hãy tưởng tượng Server là một cái Bếp, và API là người Bồi bàn</title>
+    <meta name="description" content="Giải mã RESTful API qua mô hình nhà hàng, hiểu rõ các quy tắc và tại sao nó quan trọng.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/blog.css">
+    <link href="../assets/highlight/vs.min.css" rel="stylesheet" id="code-theme" />
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeLink = document.getElementById('code-theme');
+            if (savedTheme === 'dark') {
+                themeLink.href = '../assets/highlight/atom-one-dark.min.css';
+                document.documentElement.classList.add('dark');
+            } else {
+                themeLink.href = '../assets/highlight/vs.min.css';
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="../components/header.html"></div>
+    <main>
+        <article class="blog-detail">
+            <header class="blog-header">
+                <div class="header-content">
+                    <h1>RESTful API: Hãy tưởng tượng Server là một cái Bếp, và API là người Bồi bàn</h1>
+                    <div class="blog-meta">
+                        <span class="date">December 21, 2025</span>
+                        <span class="author">By Nguyễn An Khang</span>
+                    </div>
+                </div>
+            </header>
+            <div class="blog-content">
+                <p>Nếu bạn đã từng đi phỏng vấn vị trí Backend hoặc Full-stack, 90% bạn sẽ gặp câu hỏi: "Em hiểu thế nào là RESTful API?". Hầu hết mọi người sẽ trả lời: "Dạ, REST là Representational State Transfer, dùng HTTP method như GET, POST...". Câu trả lời đó đúng, nhưng chưa đủ "sướng". Nó cho thấy bạn học vẹt.</p>
+
+                <p>Hôm nay, hãy cùng mình giải mã RESTful API bằng một mô hình mà ai cũng hiểu: Mô hình Nhà Hàng.</p>
+
+                <h2>1. Các nhân vật trong vở kịch</h2>
+                <p>Hãy tưởng tượng bạn đang đói bụng và bước vào một nhà hàng sang trọng.</p>
+
+                <p><strong>Khách hàng (Client):</strong> Là trình duyệt web (Chrome), là cái App Mobile trên điện thoại của bạn. Bạn muốn "ăn" dữ liệu.</p>
+
+                <p><strong>Nhà bếp (Server/Database):</strong> Nơi chứa gạo, thịt, rau (Dữ liệu thô) và các đầu bếp chế biến (Logic xử lý). Đây là khu vực "Cấm phận sự miễn vào". Khách hàng không thể xông thẳng vào bếp để tự lấy thịt bò được. Hỗn loạn ngay!</p>
+
+                <p><strong>Người Bồi bàn (API):</strong> Đây là nhân vật chính. Người đứng giữa, nhận yêu cầu từ bạn, mang vào bếp, rồi mang món ăn đã nấu chín ra cho bạn.</p>
+
+                <p><strong>Tờ Menu (API Documentation):</strong> Danh sách những gì bạn được phép gọi. Bạn không thể gọi món "Bún đậu" trong nhà hàng Pizza được.</p>
+
+                <p>RESTful thực chất là một bộ quy tắc ứng xử (Protocol) dành cho người bồi bàn này, để đảm bảo anh ta phục vụ hàng nghìn khách mà không bị loạn.</p>
+
+                <h2>2. Quy tắc 1: Động từ và Hành động (HTTP Methods)</h2>
+                <p>Một người bồi bàn chuyên nghiệp (chuẩn REST) phải hiểu rõ các mệnh lệnh (HTTP Verbs) để giao tiếp với nhà bếp. Không phải cứ hét lên "Làm món này đi" là xong.</p>
+
+                <p>Trong chuẩn REST, chúng ta có 4 hành động chính tương ứng với CRUD (Create, Read, Update, Delete):</p>
+
+                <p><strong>GET (Xem/Đọc):</strong></p>
+                <p>Bối cảnh: Bạn cầm Menu và hỏi: "Cho tôi xem danh sách món ăn".</p>
+                <p>Đặc điểm: Chỉ lấy dữ liệu về. Tuyệt đối không làm thay đổi gì trong bếp. Bạn xem menu 100 lần thì cái menu vẫn thế. (Tính chất này gọi là Safe & Idempotent).</p>
+
+                <p><strong>POST (Tạo mới):</strong></p>
+                <p>Bối cảnh: Bạn chốt đơn: "Cho tôi một Pizza hải sản".</p>
+                <p>Đặc điểm: Bếp bắt đầu hoạt động, nguyên liệu bị tiêu hao, một món mới được tạo ra.</p>
+
+                <p><strong>PUT (Cập nhật toàn bộ):</strong></p>
+                <p>Bối cảnh: Bạn đổi ý: "Món Pizza này tôi không lấy nữa, đổi cho tôi thành Mỳ Ý".</p>
+                <p>Đặc điểm: Thay thế hoàn toàn cái cũ bằng cái mới.</p>
+
+                <p><strong>DELETE (Xóa):</strong></p>
+                <p>Bối cảnh: "Thôi tôi hủy món này, lâu quá".</p>
+                <p>Đặc điểm: Dữ liệu bị xóa khỏi hệ thống.</p>
+
+                <p>Sai lầm kinh điển: Dùng GET để xóa dữ liệu (Ví dụ: truy cập google.com/delete-user?id=1). Nếu Google Bot đi quét web và vô tình truy cập link đó, nó sẽ xóa sạch dữ liệu của bạn! Hãy dùng đúng Method cho đúng việc.</p>
+
+                <h2>3. Quy tắc 2: Cách gọi tên món ăn (Resource Naming)</h2>
+                <p>Đây là chỗ phân biệt dân chuyên và dân nghiệp dư. Trên tờ Menu (URL), tên món ăn phải là DANH TỪ, không được chứa động từ. Vì hành động (động từ) đã nằm ở cái HTTP Method (GET, POST...) rồi.</p>
+
+                <p>Cách đặt tên sai (Kiểu RPC cũ):</p>
+                <ul>
+                    <li>GET /api/getAllUsers (Thừa chữ "get")</li>
+                    <li>POST /api/createNewUser (Thừa chữ "create")</li>
+                    <li>POST /api/deleteUser (Sai Method, sai cả URL)</li>
+                </ul>
+
+                <p>Cách đặt tên chuẩn REST:</p>
+                <ul>
+                    <li>GET /users: Lấy danh sách user.</li>
+                    <li>POST /users: Tạo user mới.</li>
+                    <li>GET /users/1: Lấy thông tin user có ID là 1.</li>
+                    <li>DELETE /users/1: Xóa user 1.</li>
+                </ul>
+
+                <p>Nhìn vào URL chuẩn, ta thấy nó cực kỳ trong sáng, dễ hiểu và nhất quán.</p>
+
+                <h2>4. Quy tắc 3: Phản hồi của Bồi bàn (HTTP Status Codes)</h2>
+                <p>Khi bạn gọi món, bồi bàn không chỉ ném đĩa thức ăn lên bàn mà còn phải báo cáo tình hình. Trong lập trình, đó là các con số (Status Code).</p>
+
+                <p><strong>2xx (Thành công - Món ngon):</strong></p>
+                <ul>
+                    <li>200 OK: Mọi thứ ổn, đây là món của bạn.</li>
+                    <li>201 Created: Tạo mới thành công (thường trả về khi dùng POST).</li>
+                </ul>
+
+                <p><strong>4xx (Lỗi tại Khách - Bạn gọi sai):</strong></p>
+                <ul>
+                    <li>400 Bad Request: Bạn gọi món không có trong menu, hoặc thiếu tiền.</li>
+                    <li>401 Unauthorized: Bạn chưa đăng nhập (Chưa xuất trình vé vào cửa).</li>
+                    <li>403 Forbidden: Bạn đã đăng nhập, nhưng không có quyền gọi món này (Ví dụ: Nhân viên quèn đòi xem lương Giám đốc).</li>
+                    <li>404 Not Found: Món này nhà hàng không bán (Sai URL).</li>
+                </ul>
+
+                <p><strong>5xx (Lỗi tại Bếp - Server toang):</strong></p>
+                <ul>
+                    <li>500 Internal Server Error: Bếp bị cháy, đầu bếp ngủ quên. Không phải lỗi của bạn.</li>
+                </ul>
+
+                <h2>5. Quy tắc quan trọng nhất: Stateless (Phi trạng thái)</h2>
+                <p>Đây là khái niệm khó hiểu nhất, nhưng hãy quay lại ví dụ nhà hàng.</p>
+
+                <p>Hãy tưởng tượng người bồi bàn bị chứng mất trí nhớ ngắn hạn.</p>
+
+                <p>Bạn gọi món khai vị. Bồi bàn mang ra.</p>
+
+                <p>5 phút sau, bạn gọi món chính. Bồi bàn nhìn bạn ngơ ngác: "Ủa, anh là ai? Anh ngồi bàn nào? Anh đã gọi món khai vị chưa?".</p>
+
+                <p>Để giải quyết vấn đề này, mỗi lần bạn gọi bồi bàn, bạn phải xuất trình lại thẻ thành viên (Token) và nhắc lại ngữ cảnh. Bồi bàn không được phép nhớ bất cứ điều gì về bạn trong đầu (Server không lưu Session state).</p>
+
+                <p>Tại sao phải khổ thế? Để phục vụ quy mô lớn (Scale). Nếu bồi bàn phải nhớ mặt 1000 khách, đầu anh ta sẽ nổ tung (Hết RAM). Nếu anh ta không cần nhớ gì cả, cứ ai đưa thẻ hợp lệ là phục vụ, thì một mình anh ta có thể phục vụ cả ngàn lượt khách, hoặc có thể thay thế bồi bàn A bằng bồi bàn B thoải mái mà khách không cần biết.</p>
+
+                <h2>Kết luận</h2>
+                <p>RESTful API không phải là một công nghệ, nó là một phong cách thiết kế. Việc tuân thủ REST giúp hệ thống của bạn:</p>
+                <ul>
+                    <li>Dễ đọc: Nhìn URL là biết nó làm gì.</li>
+                    <li>Độc lập: App Mobile, Web ReactJS hay bên thứ 3 đều có thể kết nối dễ dàng.</li>
+                    <li>Dễ mở rộng: Nhờ tính Stateless.</li>
+                </ul>
+
+                <p>Lần tới khi code API, hãy tự hỏi: "Mình đang thiết kế một người bồi bàn chuyên nghiệp, hay một anh chạy bàn lóng ngóng?".</p>
+            </div>
+        </article>
+    </main>
+    <div data-include="../components/footer.html"></div>
+    <script src="../js/main.js"></script>
+    <script src="../js/animation.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../assets/highlight/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

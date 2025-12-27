@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript: Ba dấu bằng (===) và cú lừa mang tên "Ép kiểu" (Type Coercion)</title>
+    <meta name="description" content="Giải thích sự khác biệt giữa == và === trong JavaScript, Type Coercion và những cạm bẫy phổ biến.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/blog.css">
+    <link href="../assets/highlight/vs.min.css" rel="stylesheet" id="code-theme" />
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeLink = document.getElementById('code-theme');
+            if (savedTheme === 'dark') {
+                themeLink.href = '../assets/highlight/atom-one-dark.min.css';
+                document.documentElement.classList.add('dark');
+            } else {
+                themeLink.href = '../assets/highlight/vs.min.css';
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="../components/header.html"></div>
+    <main>
+        <article class="blog-detail">
+            <header class="blog-header">
+                <div class="header-content">
+                    <h1>JavaScript: Ba dấu bằng (===) và cú lừa mang tên "Ép kiểu" (Type Coercion)</h1>
+                    <div class="blog-meta">
+                        <span class="date">December 21, 2025</span>
+                        <span class="author">By Nguyễn An Khang</span>
+                    </div>
+                </div>
+            </header>
+            <div class="blog-content">
+                <p>Nếu có một cuộc thi về sự "thân thiện nhưng nhiệt tình thái quá", JavaScript chắc chắn sẽ giành giải nhất. Tại sao ư? Vì khi bạn so sánh hai thứ chẳng liên quan gì đến nhau, thay vì báo lỗi "Sai rồi đại ca!", JS lại cố gắng... sửa hộ bạn, ép chúng nó về cùng một kiểu để so sánh. Tính năng này gọi là Type Coercion (Ép kiểu ngầm định).</p>
+
+                <p>Và công cụ đắc lực nhất cho sự "nhiệt tình" tai hại này chính là toán tử hai dấu bằng (==).</p>
+
+                <h2>1. Hiện trường vụ án: Những cú lừa kinh điển</h2>
+                <p>Hãy mở Console trình duyệt lên (F12) và gõ thử những dòng này. Kết quả sẽ khiến bạn nghi ngờ nhân sinh quan của mình:</p>
+
+                <pre><code class="language-javascript">console.log(1 == "1");        // true (Số bằng Chuỗi?)
+console.log(0 == false);      // true (Số 0 bằng False?)
+console.log("" == 0);         // true (Chuỗi rỗng bằng 0?)
+console.log(null == undefined); // true (Hai cái "không có gì" bằng nhau?)
+console.log([1,2] == "1,2");  // true (Mảng bằng Chuỗi?)
+
+// Và trùm cuối "Hack não":
+console.log([] == 0);         // true (Mảng rỗng bằng 0?)
+console.log([] == ![]);       // true (Cái gì đây trời???)</code></pre>
+
+                <p>Nếu bạn dùng ==, code của bạn có thể chạy đúng hôm nay, nhưng ngày mai nó sẽ gây ra những cái bug mà bạn debug cả ngày không ra.</p>
+
+                <h2>2. Giải mã == (Loose Equality): Kẻ phiên dịch lươn lẹo</h2>
+                <p>Tại sao 1 == "1" lại là true?</p>
+
+                <p>Khi JS thấy hai dấu bằng, nó kích hoạt một thuật toán gọi là Abstract Equality Comparison Algorithm. Quy tắc cơ bản của nó như sau:</p>
+
+                <ul>
+                    <li>Nếu cùng kiểu dữ liệu: So sánh giá trị bình thường.</li>
+                    <li>Nếu khác kiểu dữ liệu: JS sẽ âm thầm Ép kiểu (Convert) một trong hai (hoặc cả hai) về cùng một kiểu rồi mới so sánh.</li>
+                </ul>
+
+                <p><strong>Cụ thể:</strong></p>
+
+                <ul>
+                    <li><strong>Số vs Chuỗi:</strong> JS ép Chuỗi thành Số. -> "1" thành 1. -> 1 == 1 -> True.</li>
+                    <li><strong>Boolean vs Bất kỳ cái gì:</strong> JS ép Boolean thành Số.</li>
+                </ul>
+
+                <p>true thành 1.</p>
+                <p>false thành 0.</p>
+
+                <p>Ví dụ: 0 == false -> 0 == 0 -> True.</p>
+
+                <h2>3. Deep Dive: Tại sao [] == 0 lại True? (Câu hỏi phỏng vấn Senior)</h2>
+                <p>Đây là chỗ thể hiện đẳng cấp. Để hiểu cái này, bạn phải biết về ToPrimitive.</p>
+
+                <p>Khi so sánh một Object (Mảng [] là Object) với một giá trị nguyên thủy (Primitive như số, chuỗi), JS sẽ cố gắng chuyển Object đó về nguyên thủy.</p>
+
+                <p><strong>Quy trình xử lý [] == 0:</strong></p>
+
+                <ul>
+                    <li>Bên trái là [] (Object), bên phải là 0 (Number).</li>
+                    <li>JS gọi hàm ToPrimitive([]) để biến mảng thành giá trị nguyên thủy.</li>
+                    <li>Bước 1: Nó gọi [].toString(). Mảng rỗng toString() sẽ ra chuỗi rỗng "".</li>
+                    <li>Biểu thức trở thành: "" == 0.</li>
+                    <li>Bây giờ là Chuỗi vs Số. Quy tắc ở phần 2: Ép chuỗi thành số.</li>
+                    <li>Number("") sẽ ra 0.</li>
+                    <li>Biểu thức trở thành: 0 == 0 -> True.</li>
+                </ul>
+
+                <p>Ảo diệu chưa!</p>
+
+                <h2>4. Chân ái cuộc đời: === (Strict Equality)</h2>
+                <p>Ba dấu bằng === là một người bảo vệ khó tính và nguyên tắc. Nó không bao giờ ép kiểu.</p>
+
+                <p><strong>Quy trình của ===:</strong></p>
+
+                <ul>
+                    <li>Kiểm tra kiểu dữ liệu (Type) trước.</li>
+                    <li>Khác kiểu? -> False ngay lập tức (Kick ra khỏi cửa, không nói nhiều).</li>
+                    <li>Cùng kiểu? -> Lúc đó mới so sánh giá trị.</li>
+                </ul>
+
+                <pre><code class="language-javascript">console.log(1 === "1");   // False (Vì Number khác String)
+console.log(0 === false); // False (Vì Number khác Boolean)
+console.log([] === 0);    // False (Vì Object khác Number)</code></pre>
+
+                <p>Dùng === giúp code của bạn dễ đoán (predictable) và tránh được 99% lỗi ngớ ngẩn do ép kiểu.</p>
+
+                <h2>5. Cạm bẫy cuối cùng: Object Reference</h2>
+                <p>Có một trường hợp mà ngay cả === cũng trả về false dù nhìn nó rất giống nhau.</p>
+
+                <pre><code class="language-javascript">console.log({} === {});           // False
+console.log([1, 2] === [1, 2]);   // False</code></pre>
+
+                <p>Tại sao? Vì Object và Array trong JS là Reference Type (Kiểu tham chiếu). Khi bạn viết {}, máy tính tạo ra một ô nhớ mới trong bộ nhớ Heap.</p>
+
+                <ul>
+                    <li>Cái {} đầu tiên nằm ở địa chỉ nhà số 101.</li>
+                    <li>Cái {} thứ hai nằm ở địa chỉ nhà số 102.</li>
+                </ul>
+
+                <p>=== so sánh địa chỉ nhà, chứ không so sánh nội thất bên trong.</p>
+
+                <p>Muốn so sánh nội dung 2 object? Bạn không dùng === được đâu, mà phải dùng vòng lặp để so từng key, hoặc dùng JSON.stringify (cách lười), hoặc dùng thư viện như Lodash.isEqual.</p>
+
+                <h2>Kết luận: Best Practices</h2>
+                <ul>
+                    <li>Luôn luôn dùng ===. Hãy coi == là kẻ thù.</li>
+                    <li>Cài đặt ESLint cho dự án. Nó sẽ tự động gạch chân đỏ lòm mỗi khi bạn lỡ tay gõ ==.</li>
+                    <li>Chỉ có một trường hợp duy nhất == được châm chước (nhưng vẫn gây tranh cãi), đó là kiểm tra null/undefined:</li>
+                </ul>
+
+                <p>if (x == null) sẽ trả về true cho cả x = null và x = undefined. (Nhưng cá nhân mình khuyên cứ === null || === undefined cho rõ ràng).</p>
+
+                <p>Javascript cho bạn sự tự do (ép kiểu), nhưng cái giá của sự tự do là sự cảnh giác cao độ. Hãy là một Dev tỉnh táo, đừng để những con số và chuỗi lừa tình bạn!</p>
+            </div>
+        </article>
+    </main>
+    <div data-include="../components/footer.html"></div>
+    <script src="../js/main.js"></script>
+    <script src="../js/animation.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../assets/highlight/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

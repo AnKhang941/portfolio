@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MongoDB hay MySQL? Đừng chọn theo phong trào! (Cuộc chiến RDBMS vs NoSQL)</title>
+    <meta name="description" content="So sánh MySQL và MongoDB, ưu nhược điểm và khi nào nên dùng từng loại database.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/blog.css">
+    <link rel="stylesheet" href="../css/table.css">
+    <link href="../assets/highlight/vs.min.css" rel="stylesheet" id="code-theme" />
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeLink = document.getElementById('code-theme');
+            if (savedTheme === 'dark') {
+                themeLink.href = '../assets/highlight/atom-one-dark.min.css';
+                document.documentElement.classList.add('dark');
+            } else {
+                themeLink.href = '../assets/highlight/vs.min.css';
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="../components/header.html"></div>
+    <main>
+        <article class="blog-detail">
+            <header class="blog-header">
+                <div class="header-content">
+                    <h1>MongoDB hay MySQL? Đừng chọn theo phong trào! (Cuộc chiến RDBMS vs NoSQL)</h1>
+                    <div class="blog-meta">
+                        <span class="date">December 23, 2025</span>
+                        <span class="author">By Nguyễn An Khang</span>
+                    </div>
+                </div>
+            </header>
+            <div class="blog-content">
+                <p>Chào bạn, đây là bài viết chi tiết cho chủ đề SQL vs NoSQL (MySQL vs MongoDB). Đây là chủ đề "gối đầu giường" của dân Backend, nhưng để viết cho hay thì phải thoát khỏi định nghĩa sách giáo khoa và đi vào bài toán thực tế về Kiến trúc dữ liệu (Data Modeling).</p>
+
+                <p>Bài viết này sẽ giúp người đọc hiểu được sự đánh đổi (Trade-off) khi chọn Database, thay vì chỉ chọn theo cảm tính.</p>
+
+                <p>Cách đây vài năm, khi phong trào MEAN Stack (MongoDB, Express, Angular, Node) và MERN Stack nổi lên như cồn, đi đâu cũng thấy các startup hô hào: "Dùng MongoDB đi, nó là công nghệ mới, MySQL già cỗi lắm rồi!".</p>
+
+                <p>Hậu quả là gì? Rất nhiều dự án sau 6 tháng phải đập đi xây lại vì dữ liệu bị phân mảnh, lỗi trùng lặp không kiểm soát nổi.</p>
+
+                <p>Thực tế, không có Database nào là "tốt nhất". Chỉ có Database "phù hợp nhất" với dữ liệu của bạn. Hôm nay, hãy cùng đặt MySQL (đại diện cho SQL) và MongoDB (đại diện cho NoSQL) lên bàn cân.</p>
+
+                <h2>1. Tư duy khác biệt: Excel vs Túi hồ sơ</h2>
+                <p>Để hiểu sự khác biệt cốt lõi, hãy hình dung cách chúng lưu trữ dữ liệu:</p>
+
+                <p><strong>MySQL (RDBMS - Quan hệ)</strong></p>
+                <p>Hãy tưởng tượng MySQL giống như những file Excel chặt chẽ.</p>
+                <ul>
+                    <li>Bạn có bảng Users với các cột: ID, Tên, Tuổi.</li>
+                    <li>Bạn có bảng Orders với các cột: ID, User_ID, Tổng tiền.</li>
+                    <li><strong>Quy tắc (Schema):</strong> Nếu bảng Users quy định có 3 cột, bạn bắt buộc phải nhập đúng 3 cột. Không thể tự tiện thêm cột "Sở thích" vào dòng thứ 5 được.</li>
+                    <li><strong>Liên kết:</strong> Dữ liệu phân tán ở nhiều bảng, nối với nhau bằng khóa ngoại (User_ID).</li>
+                </ul>
+
+                <p><strong>MongoDB (NoSQL - Document)</strong></p>
+                <p>Hãy tưởng tượng MongoDB giống như một Túi hồ sơ chứa các tờ giấy (JSON/BSON).</p>
+                <ul>
+                    <li>Mỗi user là một tờ giấy (Document).</li>
+                    <li>User A có: Tên, Tuổi.</li>
+                    <li>User B có: Tên, Tuổi, Sở thích, Địa chỉ nhà, Tên con mèo...</li>
+                    <li><strong>Linh hoạt (Schema-less):</strong> Bạn thích ghi gì vào tờ giấy thì ghi. Không ai bắt ép tờ giấy A phải giống tờ giấy B.</li>
+                </ul>
+
+                <h2>2. MySQL - Người kế toán tỉ mỉ</h2>
+                <p>Tại sao công nghệ ra đời từ những năm 90 này vẫn thống trị thế giới tài chính? Vì 4 chữ vàng: ACID.</p>
+
+                <ul>
+                    <li><strong>A - Atomicity (Tính nguyên tử):</strong> Giao dịch là "Được ăn cả, ngã về không".</li>
+                    <p>Ví dụ: Chuyển tiền từ A sang B. Quy trình gồm: (1) Trừ tiền A -> (2) Cộng tiền B.</p>
+                    <p>Nếu bước (1) xong mà bước (2) lỗi (cúp điện), MySQL sẽ tự động Rollback (hoàn tác), trả lại tiền cho A. Tiền không bao giờ bị mất giữa chừng.</p>
+                    <li><strong>Consistency (Tính nhất quán):</strong> Dữ liệu luôn tuân thủ luật lệ (ràng buộc khóa ngoại, kiểu dữ liệu).</li>
+                </ul>
+
+                <p><strong>Khi nào chọn MySQL?</strong></p>
+                <ul>
+                    <li>Hệ thống Thương mại điện tử (E-commerce), Ví điện tử, Ngân hàng.</li>
+                    <li>Các hệ thống cần báo cáo phức tạp (Dùng câu lệnh JOIN để tổng hợp dữ liệu từ 10 bảng khác nhau).</li>
+                    <li>Khi cấu trúc dữ liệu rõ ràng và ít thay đổi.</li>
+                </ul>
+
+                <h2>3. MongoDB - Gã nghệ sĩ tốc độ</h2>
+                <p>MongoDB sinh ra để giải quyết vấn đề của kỷ nguyên Big Data: Tốc độ và Sự đa dạng.</p>
+
+                <ul>
+                    <li><strong>Tốc độ đọc/ghi khủng khiếp:</strong> Vì không cần check khóa ngoại, không cần nối bảng (JOIN), MongoDB chỉ việc ném cục JSON vào kho là xong.</li>
+                    <li><strong>Scale Out (Mở rộng ngang):</strong> Khi dữ liệu quá lớn (vài Terabyte), MySQL bắt đầu ì ạch. MongoDB hỗ trợ Sharding (chia nhỏ dữ liệu ra nhiều máy chủ) cực tốt.</li>
+                    <li><strong>Cấu trúc lồng nhau (Embedded):</strong></li>
+                    <p>Trong MySQL, để lấy thông tin đơn hàng và chi tiết sản phẩm, bạn phải JOIN bảng Orders và OrderDetails.</p>
+                    <p>Trong MongoDB, chi tiết sản phẩm nằm ngay bên trong document Order. Query 1 phát ra luôn.</p>
+                </ul>
+
+                <p><strong>Khi nào chọn MongoDB?</strong></p>
+                <ul>
+                    <li>Mạng xã hội (Social Feeds), Comment hệ thống.</li>
+                    <li>Game Online (Lưu thông tin nhân vật, item rương đồ - mỗi người một kiểu).</li>
+                    <li>IoT (Internet of Things): Lưu log cảm biến, dữ liệu trả về thiên biến vạn hóa.</li>
+                    <li>Catalog sản phẩm đa dạng (Ví dụ: Bán quần áo thì có size/màu, bán Laptop thì có CPU/RAM -> Cấu trúc khác nhau hoàn toàn).</li>
+                </ul>
+
+                <h2>4. Cạm bẫy "chết người" cần tránh</h2>
+                <p><strong>Bẫy của MySQL: Vấn đề Migration</strong></p>
+                <p>Khi bảng Users của bạn đã có 10 triệu dòng. Sếp bảo: "Thêm cho anh cột 'Số CMND' vào nhé".</p>
+
+                <p>Với MySQL, việc thay đổi cấu trúc bảng (Alter Table) trên 10 triệu dòng có thể làm treo Database trong vài tiếng đồng hồ (Downtime).</p>
+
+                <p><strong>Bẫy của MongoDB: Sự trùng lặp và "Cơn ác mộng" Update</strong></p>
+                <p>Vì MongoDB khuyến khích việc nhúng dữ liệu (Embedding) để đọc nhanh, nên nó sinh ra trùng lặp.</p>
+
+                <p>Ví dụ: Bạn lưu Tên User ngay trong Comment để đỡ phải query lại bảng User.</p>
+
+                <p>Document Comment: { content: "Hay quá", user_name: "Tùng" }.</p>
+
+                <p>Một ngày đẹp trời, Tùng đổi tên thành "Sơn".</p>
+
+                <p>Hậu quả: Bạn phải đi quét sạch hàng triệu Comment cũ để update tên từ "Tùng" -> "Sơn". Nếu sót, dữ liệu sẽ bất nhất (lúc Tùng, lúc Sơn).</p>
+
+                <h2>5. Tổng kết: Chọn sao cho chuẩn?</h2>
+                <p>Đừng hỏi: "Cái nào xịn hơn?". Hãy hỏi: "Dữ liệu của mình trông như thế nào?".</p>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tiêu chí</th>
+                            <th>MySQL (SQL)</th>
+                            <th>MongoDB (NoSQL)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Cấu trúc dữ liệu</td>
+                            <td>Cố định, rõ ràng, quan hệ chặt chẽ.</td>
+                            <td>Linh hoạt, thay đổi liên tục, phân cấp.</td>
+                        </tr>
+                        <tr>
+                            <td>Quan trọng nhất</td>
+                            <td>Tính toàn vẹn (ACID), không được sai lệch tiền nong.</td>
+                            <td>Tốc độ cao, khả năng mở rộng (Scale).</td>
+                        </tr>
+                        <tr>
+                            <td>Mối quan hệ</td>
+                            <td>Phức tạp (nhiều bảng nối nhau).</td>
+                            <td>Đơn giản (Độc lập hoặc lồng nhau).</td>
+                        </tr>
+                        <tr>
+                            <td>Dự án phù hợp</td>
+                            <td>Web bán hàng, ERP, Quản lý nhân sự.</td>
+                            <td>Real-time Analytics, Social App, Content Management (CMS).</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p><strong>Lời khuyên của Senior:</strong> Trong các hệ thống lớn thực tế (như Facebook, Uber), người ta không bao giờ chọn 1 trong 2. Họ dùng Polyglot Persistence (Đa lưu trữ).</p>
+
+                <ul>
+                    <li>Dùng MySQL để lưu thông tin User, đơn hàng, thanh toán (Cần an toàn).</li>
+                    <li>Dùng MongoDB để lưu Log hoạt động, Chat, Comment (Cần nhanh & nhiều).</li>
+                </ul>
+
+                <p>Đó mới là cách thiết kế hệ thống thông minh!</p>
+            </div>
+        </article>
+    </main>
+    <div data-include="../components/footer.html"></div>
+    <script src="../js/main.js"></script>
+    <script src="../js/animation.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../assets/highlight/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>

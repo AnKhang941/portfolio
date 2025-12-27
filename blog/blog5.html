@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TCP và UDP: Cuộc chiến giữa "Sự tin cậy" và "Tốc độ" trong thế giới mạng</title>
+    <meta name="description" content="Giải thích sự khác biệt giữa TCP và UDP, ưu nhược điểm và ứng dụng thực tế.">
+    <link rel="stylesheet" href="../css/base.css">
+    <link rel="stylesheet" href="../css/layout.css">
+    <link rel="stylesheet" href="../css/components.css">
+    <link rel="stylesheet" href="../css/blog.css">
+    <link rel="stylesheet" href="../css/table.css">
+    <link href="../assets/highlight/vs.min.css" rel="stylesheet" id="code-theme" />
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeLink = document.getElementById('code-theme');
+            if (savedTheme === 'dark') {
+                themeLink.href = '../assets/highlight/atom-one-dark.min.css';
+                document.documentElement.classList.add('dark');
+            } else {
+                themeLink.href = '../assets/highlight/vs.min.css';
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div data-include="../components/header.html"></div>
+    <main>
+        <article class="blog-detail">
+            <header class="blog-header">
+                <div class="header-content">
+                    <h1>TCP và UDP: Cuộc chiến giữa "Sự tin cậy" và "Tốc độ" trong thế giới mạng</h1>
+                    <div class="blog-meta">
+                        <span class="date">December 21, 2025</span>
+                        <span class="author">By Nguyễn An Khang</span>
+                    </div>
+                </div>
+            </header>
+            <div class="blog-content">
+                <p>Bạn có bao giờ thắc mắc: Tại sao khi bạn gửi một cái email hay tải một file PDF, từng câu từng chữ, từng dấu chấm phẩy đều chính xác 100%?</p>
+
+                <p>Nhưng khi bạn gọi video call (Zalo/Messenger) hay xem livestream bóng đá, thỉnh thoảng hình lại bị nhòe, tiếng bị giật, hay thậm chí mất hình trong 1-2 giây rồi lại có lại?</p>
+
+                <p>Sự khác biệt đó không phải ngẫu nhiên. Đó là sự lựa chọn kiến trúc giữa hai giao thức vận chuyển cốt lõi của Internet: TCP và UDP.</p>
+
+                <h2>1. Vị trí trong bản đồ (OSI Model)</h2>
+                <p>Trước khi đi sâu, hãy nhớ lại một chút. TCP và UDP nằm ở Tầng 4 (Transport Layer).</p>
+
+                <p>Nhiệm vụ của tầng này rất đơn giản: Vận chuyển dữ liệu từ ứng dụng A trên máy này sang ứng dụng B trên máy kia.</p>
+
+                <p>Nhưng vận chuyển thế nào? Đó là lúc chúng ta phải chọn phe.</p>
+
+                <h2>2. TCP (Transmission Control Protocol) - Người vận chuyển cầu toàn</h2>
+                <p>Hãy tưởng tượng TCP giống như một dịch vụ chuyển phát nhanh bảo đảm.</p>
+
+                <p>Khi bạn gửi một thùng hàng (dữ liệu) qua TCP, giao thức này cam kết với bạn 3 điều:</p>
+
+                <ul>
+                    <li>Không mất mát: Hàng chắc chắn đến nơi.</li>
+                    <li>Đúng thứ tự: Gửi A trước B thì bên kia nhận A trước B.</li>
+                    <li>Không lỗi: Hàng không bị méo mó, sứt mẻ.</li>
+                </ul>
+
+                <p><strong>Cơ chế hoạt động: Bắt tay 3 bước (3-way Handshake)</strong></p>
+
+                <p>Trước khi gửi bất cứ byte dữ liệu nào, TCP bắt buộc hai máy phải "chào hỏi" nhau để thiết lập đường truyền. Quy trình này nổi tiếng với tên gọi Bắt tay 3 bước:</p>
+
+                <ul>
+                    <li><strong>SYN (Synchronize):</strong> Client hét lên: "Alo Server, tui muốn kết nối, ông nghe rõ không?"</li>
+                    <li><strong>SYN-ACK (Synchronize-Acknowledge):</strong> Server trả lời: "Ok Client, tui nghe rõ. Thế ông có nghe tui nói không?"</li>
+                    <li><strong>ACK (Acknowledge):</strong> Client chốt: "Ok, nghe rõ. Bắt đầu gửi dữ liệu nhé!"</li>
+                </ul>
+
+                <p>Chỉ khi xong 3 bước này, dữ liệu mới được gửi đi.</p>
+
+                <p><strong>Tại sao TCP lại "chậm"?</strong></p>
+
+                <p>Vì nó quá cẩn thận.</p>
+
+                <ul>
+                    <li>Mỗi gói tin gửi đi, bên nhận phải gửi lại một tin báo "Đã nhận" (ACK).</li>
+                    <li>Nếu bên gửi chờ mãi không thấy ACK (do rớt mạng), nó sẽ gửi lại (Retransmit) gói tin đó.</li>
+                    <li>Nếu gói tin số 1, 2, 3 được gửi đi nhưng đến nơi theo thứ tự 1, 3, 2. TCP sẽ giữ lại, sắp xếp lại thành 1, 2, 3 rồi mới đưa cho người dùng.</li>
+                </ul>
+
+                <p>=> Hệ quả: TCP đảm bảo sự Tin cậy tuyệt đối, nhưng đổi lại là Độ trễ (Latency) cao và tốn tài nguyên xử lý (Overhead).</p>
+
+                <h2>3. UDP (User Datagram Protocol) - Kẻ liều lĩnh tốc độ</h2>
+                <p>Ngược lại hoàn toàn, hãy tưởng tượng UDP giống như bạn gửi thư bằng cách... ném máy bay giấy.</p>
+
+                <p>Bạn viết nội dung lên giấy, gấp lại, và phi vèo một cái sang nhà hàng xóm.</p>
+
+                <ul>
+                    <li>Nó có bay đến đích không? Hên xui.</li>
+                    <li>Giáo thổi bay mất thì sao? Thì mất luôn.</li>
+                    <li>Ném cái 1, rồi ném cái 2, nhưng cái 2 bay nhanh hơn đến trước? Kệ, đến sao nhận vậy.</li>
+                </ul>
+
+                <p><strong>Cơ chế hoạt động: Fire and Forget (Bắn và Quên)</strong></p>
+
+                <p>UDP không có bắt tay, không có chào hỏi.</p>
+
+                <p>Nó đóng gói dữ liệu và đẩy ra đường truyền ngay lập tức. Nó không quan tâm bên kia có nhận được hay không.</p>
+
+                <p>Nhìn vào cấu trúc Header (cái đầu gói tin):</p>
+
+                <ul>
+                    <li><strong>TCP Header:</strong> Dài dòng (20 bytes) với đủ thứ số thứ tự (Sequence Number), số xác nhận (ACK), cờ hiệu (Flags)...</li>
+                    <li><strong>UDP Header:</strong> Siêu ngắn gọn (8 bytes). Chỉ có Cổng nguồn, Cổng đích và Độ dài. Hết.</li>
+                </ul>
+
+                <p><strong>Tại sao chúng ta lại cần một kẻ "vô trách nhiệm" như UDP?</strong></p>
+
+                <p>Câu trả lời là: Tốc độ thực (Real-time).</p>
+
+                <p>Hãy tưởng tượng bạn đang chơi game bắn súng (CS:GO, Valorant) hoặc đang gọi Video Call.</p>
+
+                <p>Tại giây thứ 10, bạn bắn một viên đạn.</p>
+
+                <p>Gói tin "bắn đạn" đó bị rớt.</p>
+
+                <p>Nếu dùng TCP: Game sẽ dừng lại (lag), chờ gửi lại gói tin đó. Đến giây thứ 12, gói tin đến nơi. Nhưng lúc đó kẻ địch chạy mất rồi. Việc nhận lại gói tin cũ là vô nghĩa.</p>
+
+                <p>Nếu dùng UDP: Gói tin mất thì cho mất luôn. Game bỏ qua khung hình đó và cập nhật ngay vị trí hiện tại ở giây thứ 11. Hình ảnh có thể bị giật một chút, nhưng dòng thời gian vẫn trôi chảy liên tục.</p>
+
+                <p>=> Triết lý của UDP: "Thà mất một chút dữ liệu còn hơn là bị trễ."</p>
+
+                <h2>4. Bảng so sánh tổng kết</h2>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Đặc điểm</th>
+                            <th>TCP (Transmission Control Protocol)</th>
+                            <th>UDP (User Datagram Protocol)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Loại kết nối</td>
+                            <td>Hướng kết nối (Connection-oriented)</td>
+                            <td>Không kết nối (Connectionless)</td>
+                        </tr>
+                        <tr>
+                            <td>Độ tin cậy</td>
+                            <td>Cao. Đảm bảo dữ liệu đến nơi, không lỗi.</td>
+                            <td>Thấp. Có thể mất gói tin (Packet loss).</td>
+                        </tr>
+                        <tr>
+                            <td>Thứ tự</td>
+                            <td>Đảm bảo đúng thứ tự gửi.</td>
+                            <td>Không đảm bảo (Đến lộn xộn cũng nhận).</td>
+                        </tr>
+                        <tr>
+                            <td>Tốc độ</td>
+                            <td>Chậm hơn (do phải bắt tay, check lỗi).</td>
+                            <td>Rất nhanh, độ trễ thấp.</td>
+                        </tr>
+                        <tr>
+                            <td>Header Size</td>
+                            <td>Nặng (20-60 bytes).</td>
+                            <td>Nhẹ (8 bytes).</td>
+                        </tr>
+                        <tr>
+                            <td>Ứng dụng</td>
+                            <td>Web (HTTP/HTTPS), Email (SMTP), File (FTP).</td>
+                            <td>Game Online, Livestream, DNS, VoIP.</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h2>5. Một chút mở rộng (Kiến thức phỏng vấn Senior)</h2>
+                <p>Có một sự thật thú vị: HTTP/3 (phiên bản mới nhất của giao thức Web) đã từ bỏ TCP để chuyển sang dùng QUIC (một giao thức dựa trên nền tảng UDP).</p>
+
+                <p>Tại sao Google lại làm vậy?</p>
+
+                <p>Họ nhận ra TCP đã quá già cỗi cho tốc độ Internet hiện đại. Họ muốn sự nhanh nhẹn của UDP nhưng lại muốn thêm cơ chế kiểm soát lỗi vào đó (ở tầng ứng dụng).</p>
+
+                <p>Nghĩa là: Dùng "cốt" UDP để chạy nhanh, nhưng đắp thêm "da thịt" kiểm soát lỗi để an toàn. Đó là tương lai của Internet.</p>
+
+                <h2>Kết luận</h2>
+                <p>Không có giao thức nào là "tốt nhất", chỉ có giao thức "phù hợp nhất".</p>
+
+                <ul>
+                    <li>Nếu bạn xây dựng ứng dụng Chat, Web bán hàng: Chọn TCP.</li>
+                    <li>Nếu bạn làm Game Real-time, Ứng dụng họp trực tuyến: Chọn UDP.</li>
+                </ul>
+
+                <p>Hiểu rõ sự khác biệt này sẽ giúp bạn thiết kế hệ thống backend tối ưu và không bị người dùng phàn nàn: "Sao mạng lag thế em ơi!".</p>
+            </div>
+        </article>
+    </main>
+    <div data-include="../components/footer.html"></div>
+    <script src="../js/main.js"></script>
+    <script src="../js/animation.js"></script>
+    <script src="../js/nav.js"></script>
+    <script src="../assets/highlight/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>
