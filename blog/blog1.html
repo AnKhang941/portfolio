@@ -3,29 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <base href="/portfolio/">
     <title>Giải mã JWT (JSON Web Token): Tấm "vé thông hành" quyền lực không cần Check Database</title>
     <meta name="description" content="Hiểu rõ JWT là gì, cách hoạt động và những sai lầm phổ biến khi sử dụng JSON Web Token trong authentication.">
-    <link rel="stylesheet" href="../css/base.css">
-    <link rel="stylesheet" href="../css/layout.css">
-    <link rel="stylesheet" href="../css/components.css">
-    <link rel="stylesheet" href="../css/blog.css">
-    <link href="../assets/highlight/vs.min.css" rel="stylesheet" id="code-theme" />
+    <link rel="stylesheet" href="/portfolio/css/base.css">
+    <link rel="stylesheet" href="/portfolio/css/layout.css">
+    <link rel="stylesheet" href="/portfolio/css/components.css">
+    <link rel="stylesheet" href="/portfolio/css/blog.css">
+    <link href="/portfolio/assets/highlight/vs.min.css" rel="stylesheet" id="code-theme" />
     <script>
         (function() {
             const savedTheme = localStorage.getItem('theme');
             const themeLink = document.getElementById('code-theme');
             if (savedTheme === 'dark') {
-                themeLink.href = '../assets/highlight/atom-one-dark.min.css';
+                themeLink.href = '/portfolio/assets/highlight/atom-one-dark.min.css';
                 document.documentElement.classList.add('dark');
             } else {
-                themeLink.href = '../assets/highlight/vs.min.css';
+                themeLink.href = '/portfolio/assets/highlight/vs.min.css';
             }
         })();
     </script>
 </head>
 <body>
-    <div data-include="../components/header.html"></div>
+    <div data-include="/portfolio/components/header.html"></div>
     <main>
         <article class="blog-detail">
             <header class="blog-header">
@@ -148,11 +147,11 @@
             </div>
         </article>
     </main>
-    <div data-include="../components/footer.html"></div>
-    <script src="../js/main.js"></script>
-    <script src="../js/animation.js"></script>
-    <script src="../js/nav.js"></script>
-    <script src="../assets/highlight/highlight.min.js"></script>
+    <div data-include="/portfolio/components/footer.html"></div>
+    <script src="/portfolio/js/main.js"></script>
+    <script src="/portfolio/js/animation.js"></script>
+    <script src="/portfolio/js/nav.js"></script>
+    <script src="/portfolio/assets/highlight/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
 </body>
 </html>
